@@ -79,6 +79,8 @@
                 selectedLabel: 'Selected',
                 locationHint: 'City name or latitude, longitude coordinates',
                 houseSizeHint: 'Enter your total house area in square meters',
+                houseSizeHintOptional: 'Leave empty to estimate from household size (typical Azerbaijan dwelling).',
+                houseAreaEstimated: 'House area estimated: {area} m² from {people} people.',
                 peopleHint: 'Including infants and children',
                 roofLimit: 'Maximum Roof Space Available (m²)',
                 roofLimitHint: 'Leave empty for unlimited, or enter max roof area to limit panel count',
@@ -206,6 +208,8 @@
                 selectedLabel: 'Seçildi',
                 locationHint: 'Şəhər adı və ya enlik, uzunluq koordinatları',
                 houseSizeHint: 'Ümumi ev sahəsini kvadrat metrlərlə daxil edin',
+                houseSizeHintOptional: 'Ev sayından təxmin etmək üçün boş buraxın (Azərbaycanda tipik məskun).',
+                houseAreaEstimated: 'Ev sahəsi təxmini: {area} m² ({people} nəfərdən).',
                 peopleHint: 'Körpə və uşaqlar daxil olmaqla',
                 roofLimit: 'Mövcud maksimum dam sahəsi (m²)',
                 roofLimitHint: 'Limitsiz üçün boş buraxın, ya da panel sayını məhdudlaşdırmaq üçün sahə daxil edin',
@@ -333,6 +337,8 @@
                 selectedLabel: 'Выбрано',
                 locationHint: 'Название города или координаты: широта, долгота',
                 houseSizeHint: 'Введите общую площадь дома в квадратных метрах',
+                houseSizeHintOptional: 'Оставьте пустым для оценки по числу жильцов (типичное жильё в Азербайджане).',
+                houseAreaEstimated: 'Площадь дома оценена: {area} м² по {people} чел.',
                 peopleHint: 'Включая младенцев и детей',
                 roofLimit: 'Максимальная доступная площадь крыши (м²)',
                 roofLimitHint: 'Оставьте пустым для неограниченного, или введите площадь для ограничения количества панелей',
@@ -465,6 +471,15 @@
 
     window.getLanguage = function () {
         return getLang();
+    };
+
+    window.getTranslation = function (key) {
+        var lang = getLang();
+        var t = T[lang] || T.en;
+        var parts = key.split('.');
+        var val = t;
+        for (var i = 0; i < parts.length && val; i++) val = val[parts[i]];
+        return (val != null && typeof val === 'string') ? val : '';
     };
 
     window.applyI18n = function () {

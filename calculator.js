@@ -1,12 +1,21 @@
-// Global variables
+            // Global variables
+// Default and fallback: Baku (Capital) — verified coordinates
+const BAKU_DEFAULT = { lat: 40.3953, lon: 49.8822 };
 let map, marker;
-let selectedLocation = { lat: 40.4093, lon: 49.8671 }; // Default: Baku
+let selectedLocation = { ...BAKU_DEFAULT };
 
+// Curated Azerbaijan city coordinates (verified; add more as needed)
 const cityCoordinates = {
-    'baku': { lat: 40.4093, lon: 49.8671 },
+    'baku': { lat: 40.3953, lon: 49.8822 },
+    'sumqayıt': { lat: 40.5897, lon: 49.6686 },
+    'sumqayit': { lat: 40.5897, lon: 49.6686 },
+    'sumgait': { lat: 40.5897, lon: 49.6686 },
+    'gəncə': { lat: 40.6828, lon: 46.3606 },
     'ganja': { lat: 40.6828, lon: 46.3606 },
-    'sumqayit': { lat: 40.5892, lon: 49.6686 },
-    'sumgait': { lat: 40.5892, lon: 49.6686 },
+    'gence': { lat: 40.6828, lon: 46.3606 },
+    'ağcabədi': { lat: 40.0528, lon: 47.4603 },
+    'agcabedi': { lat: 40.0528, lon: 47.4603 },
+    'agjabedi': { lat: 40.0528, lon: 47.4603 },
     'mingachevir': { lat: 40.7703, lon: 47.0495 },
     'lankaran': { lat: 38.7539, lon: 48.8509 },
     'shaki': { lat: 41.1919, lon: 47.1706 },
@@ -28,14 +37,14 @@ async function getUserLocation() {
             if (lat >= 38 && lat <= 42 && lon >= 44 && lon <= 51) {
                 return { lat, lon, zoom: 10 };
             } else {
-                return { lat: 40.4093, lon: 49.8671, zoom: 7 };
+                return { ...BAKU_DEFAULT, zoom: 7 };
             }
         }
     } catch (error) {
         console.log('IP geolocation failed, using default location');
     }
 
-    return { lat: 40.4093, lon: 49.8671, zoom: 7 };
+    return { ...BAKU_DEFAULT, zoom: 7 };
 }
 
 async function initMap() {
@@ -86,6 +95,34 @@ function updateLocationInputs() {
     }
 }
 
+// Geocode a place name via OpenStreetMap Nominatim (free; no API key)
+const AZ_BOUNDS = { latMin: 38, latMax: 42, lonMin: 44, lonMax: 51 };
+async function geocodeLocation(query) {
+    const q = query.includes('Azerbaijan') ? query : query + ', Azerbaijan';
+    try {
+        const url = 'https://nominatim.openstreetmap.org/search?' + new URLSearchParams({
+            q: q,
+            format: 'json',
+            limit: 1,
+            countrycodes: 'az'
+        });
+        const res = await fetch(url, {
+            headers: { 'Accept': 'application/json', 'User-Agent': 'AZ-Energy-Hub-Solar-Calculator' }
+        });
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+            if (!isNaN(lat) && !isNaN(lon) && lat >= AZ_BOUNDS.latMin && lat <= AZ_BOUNDS.latMax && lon >= AZ_BOUNDS.lonMin && lon <= AZ_BOUNDS.lonMax) {
+                return { lat, lon };
+            }
+        }
+    } catch (e) {
+        console.warn('Geocoding failed for:', query, e);
+    }
+    return null;
+}
+
 // Get coordinates from location input; updates map/marker when city or coords are resolved
 async function getCoordinates(locationStr) {
     if (!locationStr || locationStr.trim() === '') {
@@ -93,8 +130,9 @@ async function getCoordinates(locationStr) {
     }
 
     const trimmed = locationStr.trim().toLowerCase();
+    const rawTrimmed = locationStr.trim();
 
-    // Check if it's a known city
+    // 1) Known city list (curated, correct coordinates)
     if (cityCoordinates[trimmed]) {
         const coords = cityCoordinates[trimmed];
         selectedLocation = coords;
@@ -104,7 +142,7 @@ async function getCoordinates(locationStr) {
         return coords;
     }
 
-    // Try to parse as coordinates
+    // 2) Parse as "lat, lon"
     const coordRegex = /^(-?\d+\.?\d*),\s*(-?\d+\.?\d*)$/;
     const match = locationStr.trim().match(coordRegex);
     if (match) {
@@ -119,7 +157,17 @@ async function getCoordinates(locationStr) {
         }
     }
 
-    // Fallback: use current map selection
+    // 3) Geocode via Nominatim (any other place name in Azerbaijan)
+    const geocoded = await geocodeLocation(rawTrimmed);
+    if (geocoded) {
+        selectedLocation = geocoded;
+        if (marker) marker.setLatLng([geocoded.lat, geocoded.lon]);
+        if (map) map.setView([geocoded.lat, geocoded.lon], 10);
+        updateLocationDisplay();
+        return geocoded;
+    }
+
+    // 4) Fallback: current map selection
     return selectedLocation;
 }
 
@@ -134,7 +182,7 @@ async function getPVGISYield(lat, lon, tilt = 35, aspect = 0) {
     else pvgisAspect = (aspect - 180) * -1;
 
     const proxyUrl = `/api/pvgis?lat=${lat}&lon=${lon}&tilt=${tilt}&aspect=${pvgisAspect}`;
-    const directUrl = `https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=${lat}&lon=${lon}&peakpower=1&loss=11&angle=${tilt}&aspect=${pvgisAspect}&outputformat=json`;
+    const directUrl = `https://re.jrc.ec.europa.eu/api/v5_3/PVcalc?lat=${lat}&lon=${lon}&peakpower=1&loss=11&angle=${tilt}&aspect=${pvgisAspect}&outputformat=json`;
 
     try {
         const response = await fetch(proxyUrl);
@@ -177,6 +225,16 @@ async function getPVGISYield(lat, lon, tilt = 35, aspect = 0) {
 // Calculate optimal tilt angle based on latitude
 function getOptimalTilt(lat) {
     return Math.round(Math.abs(lat));
+}
+
+// Estimate house area (m²) from household size — Azerbaijan-relevant heuristic. API can be wired in later via getEstimatedHouseArea(peopleCount, regionOrCoords).
+function getEstimatedHouseArea(peopleCount) {
+    const n = Math.max(1, parseInt(peopleCount, 10) || 1);
+    if (n === 1) return 45;
+    if (n === 2) return 70;
+    if (n === 3) return 90;
+    if (n === 4) return 115;
+    return 115 + (n - 4) * 15;
 }
 
 // Toggle advanced options
@@ -433,17 +491,18 @@ window.performCalculation = async function (phoneNumber) {
         btnText.textContent = 'Calculating...';
 
         const location = document.getElementById('location').value.trim();
-        const houseSize = parseFloat(document.getElementById('house-size').value);
-        const peopleCount = parseInt(document.getElementById('people-count').value) || 3;
+        const houseSizeRaw = document.getElementById('house-size').value.trim();
+        const houseSizeInput = parseFloat(houseSizeRaw);
+        const peopleCount = Math.max(1, parseInt(document.getElementById('people-count').value, 10) || 1);
         const daytimeOccupancyEl = document.querySelector('input[name="daytime-occupancy"]:checked');
         const daytimeOccupancy = daytimeOccupancyEl ? daytimeOccupancyEl.value : 'yes';
         const roofLimit = parseFloat(document.getElementById('roof-area-limit').value);
         const tiltAngleInput = document.getElementById('tilt-angle').value;
         const orientationInput = document.getElementById('panel-orientation').value;
 
-        if (!houseSize || houseSize <= 0) {
-            throw new Error('Please enter a valid house size (greater than 0)');
-        }
+        const houseSizeEstimated = !houseSizeRaw || isNaN(houseSizeInput) || houseSizeInput <= 0;
+        const houseSize = houseSizeEstimated ? getEstimatedHouseArea(peopleCount) : houseSizeInput;
+
         if (!location) {
             throw new Error('Please enter a location');
         }
@@ -454,8 +513,13 @@ window.performCalculation = async function (phoneNumber) {
             throw new Error('Could not determine location coordinates. Please check your location input.');
         }
 
-        const tiltAngle = tiltAngleInput && !isNaN(parseFloat(tiltAngleInput)) ? parseFloat(tiltAngleInput) : 35;
-        const orientation = orientationInput && !isNaN(parseFloat(orientationInput)) ? parseFloat(orientationInput) : 0;
+        const advancedVisible = getComputedStyle(document.getElementById('advanced-options')).display !== 'none';
+        const tiltAngle = (advancedVisible && tiltAngleInput && !isNaN(parseFloat(tiltAngleInput)))
+            ? parseFloat(tiltAngleInput)
+            : getOptimalTilt(coords.lat);
+        const orientation = (advancedVisible && orientationInput && !isNaN(parseFloat(orientationInput)))
+            ? parseFloat(orientationInput)
+            : 180;
 
         const pvgisYield = await getPVGISYield(coords.lat, coords.lon, tiltAngle, orientation);
         if (!pvgisYield || pvgisYield <= 0) {
@@ -514,10 +578,16 @@ window.performCalculation = async function (phoneNumber) {
         // Store for AI analysis after payment
         window._lastCalculationData = calculationData;
 
-        displayResults(actualPanels, finalKWp, finalProduction, finalArea, pvgisYield, coords);
+        displayResults(actualPanels, finalKWp, finalProduction, finalArea, pvgisYield, coords, { tiltAngle, orientation, houseSizeEstimated, houseSize, peopleCount });
 
         const pvgisNote = document.getElementById('pvgis-note');
-        let baseNote = `<strong>Data source:</strong> PVGIS-SARAH database for location (${coords.lat.toFixed(4)}, ${coords.lon.toFixed(4)}) with ${tiltAngle}° tilt, ${orientation}° orientation.`;
+        let baseNote = `<strong>Data source:</strong> PVGIS 5.3 (SARAH) for location (${coords.lat.toFixed(4)}, ${coords.lon.toFixed(4)}) with ${tiltAngle}° tilt, ${orientation}° orientation.`;
+        if (houseSizeEstimated) {
+            const msg = (typeof window.getTranslation === 'function' && window.getTranslation('calculator.houseAreaEstimated'))
+                ? window.getTranslation('calculator.houseAreaEstimated').replace('{area}', Math.round(houseSize)).replace('{people}', peopleCount)
+                : `House area estimated: ${Math.round(houseSize)} m² from ${peopleCount} people.`;
+            baseNote += `<p><strong>${msg}</strong></p>`;
+        }
         if (limitedByRoof) {
             baseNote += `
             <div style="margin-top: 1.5rem; padding: 2rem; background: linear-gradient(135deg, rgba(255, 165, 0, 0.15), rgba(239, 68, 68, 0.1)); border-left: 4px solid #f59e0b; border-radius: 12px;">
@@ -545,12 +615,26 @@ window.performCalculation = async function (phoneNumber) {
         btn.disabled = false;
         btn.style.opacity = '1';
         btn.style.cursor = 'pointer';
-        btnText.textContent = 'Calculate System Size';
+        btnText.textContent = (typeof window.getTranslation === 'function' && window.getTranslation('calculator.calcBtn')) || 'Calculate System Size';
     }
 }
 
+// Orientation label for optimization tip (0=North, 90=East, 180=South, 270=West)
+function getOrientationLabel(orientation) {
+    const o = Math.round(Number(orientation));
+    if (o === 0) return 'North (0°)';
+    if (o === 90) return 'East (90°)';
+    if (o === 180) return 'South (180°)';
+    if (o === 270) return 'West (270°)';
+    return `South (180°)`;
+}
+
 // Display results
-function displayResults(panels, kWp, production, area, solarYield, coords) {
+function displayResults(panels, kWp, production, area, solarYield, coords, opts) {
+    opts = opts || {};
+    const tiltAngle = opts.tiltAngle != null ? opts.tiltAngle : (coords ? getOptimalTilt(coords.lat) : 35);
+    const orientation = opts.orientation != null ? opts.orientation : 180;
+
     document.getElementById('main-result').textContent = panels;
     document.getElementById('system-size').textContent = kWp.toFixed(1);
     document.getElementById('annual-production').textContent = Math.round(production).toLocaleString();
@@ -570,10 +654,9 @@ function displayResults(panels, kWp, production, area, solarYield, coords) {
     document.getElementById('co2-reduction').textContent = co2ReductionTons.toFixed(2);
     document.getElementById('tree-equivalent').textContent = treeEquivalent.toLocaleString();
 
-    if (coords) {
-        const optimalTilt = getOptimalTilt(coords.lat);
-        document.getElementById('opt-tilt').textContent = `${optimalTilt}°`;
-    }
+    document.getElementById('opt-tilt').textContent = `${tiltAngle}°`;
+    const optOrientEl = document.getElementById('opt-orientation');
+    if (optOrientEl) optOrientEl.textContent = getOrientationLabel(orientation);
 
     if (window.lastSystemLoss) {
         const lossEl = document.getElementById('system-loss-display');

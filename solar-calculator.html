@@ -96,6 +96,7 @@
                         <label for="house-size" data-i18n="calculator.houseSize">House Size (m²)</label>
                         <input type="number" id="house-size" placeholder="e.g., 150" min="0">
                         <small data-i18n="calculator.houseSizeHint">Enter your total house area in square meters</small>
+                        <small class="form-hint-optional" data-i18n="calculator.houseSizeHintOptional">Leave empty to estimate from household size (typical Azerbaijan dwelling).</small>
                     </div>
 
                     <div class="form-group">
@@ -242,7 +243,7 @@
                             </div>
                             <div class="tip-card">
                                 <h4>🧭 <span data-i18n="calculator.tipOrientTitle">Panel Orientation</span></h4>
-                                <div class="tip-value" data-i18n="calculator.tipOrientValue">South (180°)</div>
+                                <div class="tip-value" id="opt-orientation" data-i18n="calculator.tipOrientValue">South (180°)</div>
                                 <p data-i18n="calculator.tipOrientDesc">Face panels directly south for maximum exposure in Northern Hemisphere</p>
                             </div>
                             <div class="tip-card" title="You told PVGIS to assume that 14% of the DC energy produced by the panels is lost before it becomes usable AC electricity.">
