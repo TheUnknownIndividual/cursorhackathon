@@ -171,8 +171,10 @@ async function getCoordinates(locationStr) {
     return selectedLocation;
 }
 
-// Get PVGIS solar yield data (proxy first, then direct API; same logic as CECSO)
+// Get PVGIS solar yield data via proxy only (direct PVGIS is CORS-blocked in browser).
+// Sets window.pvgisFetchFailed when fallback yield is used so the UI can show a clear note.
 async function getPVGISYield(lat, lon, tilt = 35, aspect = 0) {
+    window.pvgisFetchFailed = false;
     // Convert orientation: 0°=North, 90°=East, 180°=South, 270°=West → PVGIS aspect: South=0, East=-90, West=90
     let pvgisAspect = 0;
     if (aspect === 0) pvgisAspect = 0;
@@ -182,7 +184,6 @@ async function getPVGISYield(lat, lon, tilt = 35, aspect = 0) {
     else pvgisAspect = (aspect - 180) * -1;
 
     const proxyUrl = `/api/pvgis?lat=${lat}&lon=${lon}&tilt=${tilt}&aspect=${pvgisAspect}`;
-    const directUrl = `https://re.jrc.ec.europa.eu/api/v5_3/PVcalc?lat=${lat}&lon=${lon}&peakpower=1&loss=11&angle=${tilt}&aspect=${pvgisAspect}&outputformat=json`;
 
     try {
         const response = await fetch(proxyUrl);
@@ -197,28 +198,13 @@ async function getPVGISYield(lat, lon, tilt = 35, aspect = 0) {
                 return Math.round(yearlyProduction);
             }
         }
+        console.warn('PVGIS proxy returned non-OK:', response.status);
     } catch (error) {
-        console.warn('Proxy API failed, trying direct PVGIS:', error);
+        console.warn('PVGIS proxy request failed:', error);
     }
 
-    try {
-        const response = await fetch(directUrl);
-        if (response.ok) {
-            const data = await response.json();
-            if (data.outputs && data.outputs.totals && data.outputs.totals.fixed) {
-                const yearlyProduction = data.outputs.totals.fixed.E_y;
-                console.log(`✅ PVGIS data fetched directly for (${lat}, ${lon}): ${yearlyProduction} kWh/kWp/year`);
-                if (data.inputs && data.inputs.pv_module) {
-                    window.lastSystemLoss = data.inputs.pv_module.system_loss;
-                }
-                return Math.round(yearlyProduction);
-            }
-        }
-    } catch (error) {
-        console.error('Direct PVGIS API also failed:', error);
-    }
-
-    console.warn(`❌ All PVGIS methods failed for (${lat}, ${lon}), using Azerbaijan average`);
+    window.pvgisFetchFailed = true;
+    console.warn(`❌ PVGIS unavailable for (${lat}, ${lon}), using Azerbaijan average (1,350 kWh/kWp/year)`);
     return 1350;
 }
 
@@ -299,11 +285,7 @@ function unlockAndShowAI() {
     }
 }
 
-// ── AI content generation (OpenAI) ───────────────────────────────
-
-// API key is loaded from env-config.js (gitignored) via window.ENV_API
-// Source of truth: .env  →  api=<key>
-const _OKEY = (typeof window !== 'undefined' && window.ENV_API) ? window.ENV_API : '';
+// ── AI content generation (via /api/ai-analysis; key from Vercel env) ───
 const AI_CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
 
 function aiCacheKey(data, lang) {
@@ -392,44 +374,20 @@ async function generateAIAnalysis(data) {
 
     showAILoading();
 
-    const langNames = { en: 'English', az: 'Azerbaijani', ru: 'Russian' };
-    const langName  = langNames[lang] || 'English';
-
-    const kWp        = parseFloat(data.system_size_kwp)         || 0;
-    const production = parseInt(data.annual_production_kwh, 10) || 0;
-    const cost       = parseInt(data.estimated_cost_azn, 10)    || 0;
-    const roofArea   = parseInt(data.roof_area_m2, 10)          || 0;
-    const solarYield = kWp > 0 ? Math.round(production / kWp)  : 1350;
-    const annualSavings = Math.round(production * 0.12);
-
-    const prompt = `You are a certified solar energy engineer specializing in Azerbaijan. Analyze the following solar system and respond ONLY in ${langName}.
-
-SYSTEM DATA:
-- Location: ${data.latitude}, ${data.longitude} (${data.location_name || 'Azerbaijan'})
-- Panels: ${data.panels_needed} × 550W = ${kWp} kWp
-- Annual production: ${production} kWh/yr  |  Solar yield: ${solarYield} kWh/kWp/yr (AZ avg: 1,350)
-- Roof area needed: ${roofArea} m²  |  House: ${data.house_size_m2} m²
-- Residents: ${data.people_count}  |  Daytime home: ${data.daytime_occupancy ? 'yes' : 'no'}
-- Electric cooking: ${data.electric_cooking ? 'yes' : 'no'}  |  Heavy AC: ${data.heavy_ac ? 'yes' : 'no'}  |  Water heater: ${data.water_heater ? 'yes' : 'no'}
-- System cost: ${cost} AZN  |  Est. annual savings: ${annualSavings} AZN (tariff 0.12 AZN/kWh)
-
-Provide 7–9 insights. IMPORTANT: At least 2 must be TECHNICAL SETUP insights (non-obvious professional info) covering things like: inverter type recommendation (string vs micro) and why, DC cable sizing (mm²) for this system's short-circuit current, AC cable sizing from inverter to panel, grounding/earthing method and electrode resistance target (<10Ω), surge protection device (SPD) class and placement, MPPT voltage window matching for this kWp, monitoring system options and why they matter, Azerbaijani grid connection code requirements, protection relay settings.
-
-Respond ONLY with this exact JSON (no markdown, no backticks):
-{"insights":[{"icon":"emoji","title":"short title","body":"detailed explanation"},...],"disclaimer":"one-sentence disclaimer in ${langName} about consulting professionals"}`;
-
     try {
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        const res = await fetch('/api/ai-analysis', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _OKEY },
-            body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], temperature: 0.7, max_tokens: 1800 })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data, lang })
         });
-        if (!res.ok) throw new Error('OpenAI ' + res.status);
-        const json  = await res.json();
-        const raw   = json.choices[0].message.content.trim();
-        const match = raw.match(/\{[\s\S]*\}/);
-        if (!match) throw new Error('No JSON in response');
-        const parsed = JSON.parse(match[0]);
+        if (res.status === 503) {
+            const T = { en: 'AI analysis is not configured or temporarily unavailable.', az: 'AI analizi təyin edilməyib və ya müvəqqəti olaraq əlçatan deyil.', ru: 'Анализ ИИ не настроен или временно недоступен.' };
+            container.innerHTML = `<p class="ai-error-msg">⚠️ ${T[lang] || T.en}</p>`;
+            return;
+        }
+        if (!res.ok) throw new Error('API ' + res.status);
+        const parsed = await res.json();
+        if (!parsed.insights) throw new Error('Invalid response format');
         writeAICache(cacheKey, parsed);
         renderAIInsights(parsed);
     } catch (err) {
@@ -587,6 +545,9 @@ window.performCalculation = async function (phoneNumber) {
                 ? window.getTranslation('calculator.houseAreaEstimated').replace('{area}', Math.round(houseSize)).replace('{people}', peopleCount)
                 : `House area estimated: ${Math.round(houseSize)} m² from ${peopleCount} people.`;
             baseNote += `<p><strong>${msg}</strong></p>`;
+        }
+        if (window.pvgisFetchFailed) {
+            baseNote += `<p><strong>Solar data for your location could not be loaded (proxy or network error). This estimate uses the Azerbaijan average of 1,350 kWh/kWp/year. Please try again later.</strong></p>`;
         }
         if (limitedByRoof) {
             baseNote += `

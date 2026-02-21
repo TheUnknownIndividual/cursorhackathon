@@ -13,16 +13,19 @@ Azerbaijan Sustainable Energies Hub — a multi-language renewable energy platfo
 
 ## Setup
 
-1. Clone the repo
-2. Copy `env-config.example.js` → `env-config.js`
-3. Fill in your OpenAI API key (from `.env` → `api=...`) in `env-config.js`
-4. Serve with any static server:
+### Production (Vercel)
 
-```bash
-python3 -m http.server 8080
-# or
-npx serve .
-```
+- Deploy to Vercel. The Solar Calculator uses two serverless API routes:
+  - **`/api/pvgis`** — Proxies requests to PVGIS (no env var required).
+  - **`/api/ai-analysis`** — Calls OpenAI for paywalled AI insights. Set **`OPENAI_API_KEY`** in the Vercel project (Settings → Environment Variables). If unset, AI analysis will show "not configured".
+- No `env-config.js` is needed on Vercel; secrets stay in Vercel env.
+
+### Local development
+
+1. Clone the repo.
+2. Serve with any static server (e.g. `python3 -m http.server 8080` or `npx serve .`).
+3. For **PVGIS**: use a local proxy or run the Vercel dev server (`vercel dev`) so `/api/pvgis` is available; otherwise the calculator will fall back to the Azerbaijan average and show a note.
+4. For **AI analysis**: either set `OPENAI_API_KEY` when running `vercel dev`, or the UI will show that AI analysis is not configured.
 
 > **Note:** The site must be served (not opened as `file://`) for `fetch()` calls to work.
 
@@ -30,4 +33,4 @@ npx serve .
 
 Vanilla HTML / CSS / JavaScript — no framework, no build step.
 
-External APIs: PVGIS (solar data), OpenAI GPT-4o-mini (AI analysis), allorigins.win (CORS proxy for news scraping), ipapi.co (geolocation), Leaflet + OpenStreetMap (map).
+External APIs: PVGIS (solar data via `/api/pvgis` proxy), OpenAI GPT-4o-mini (AI analysis via `/api/ai-analysis`; key from Vercel env), allorigins.win (CORS proxy for news scraping), ipapi.co (geolocation), Leaflet + OpenStreetMap (map).
