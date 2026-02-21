@@ -636,26 +636,82 @@ body:not(.dark-mode) .hero-overlay {
     margin-top: 3rem;
 }
 
+/* ── Burger button (hidden on desktop) ──────────────────────────── */
+.nav-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+.nav-burger:hover { background: rgba(255,255,255,0.12); }
+.nav-burger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s, width 0.3s;
+    transform-origin: center;
+}
+.nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; width: 0; }
+.nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
 /* Responsive Design */
 @media (max-width: 768px) {
+    .nav-burger { display: flex; }
+
     .nav-inner {
-        grid-template-columns: 1fr;
-        text-align: center;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto;
         border-radius: 20px;
+        transition: border-radius 0.2s;
+        padding: 0.55rem 1rem;
     }
 
-    .logo {
-        justify-self: center;
-    }
+    /* Logo stays top-left */
+    .nav-inner .logo { grid-column: 1; grid-row: 1; justify-self: start; }
 
-    .nav-right {
-        justify-content: center;
-    }
+    /* Controls (lang + theme + burger) top-right */
+    .nav-inner .nav-right { grid-column: 2; grid-row: 1; justify-content: flex-end; }
 
+    /* Nav links: hidden, span full width below the top row */
     .nav-links {
-        gap: 1rem;
-        justify-content: center;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 0.5rem 0 0.25rem;
+        border-top: 1px solid rgba(255,255,255,0.12);
+        margin-top: 0.4rem;
     }
+
+    .nav-links li { width: 100%; }
+
+    .nav-links a {
+        display: block;
+        padding: 0.65rem 0.5rem;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 0.95rem;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+    /* Open state */
+    .nav-inner.nav-open .nav-links { display: flex; }
+    .nav-inner.nav-open { border-radius: 20px; }
 
     .hero h1 {
         font-size: 1.75rem;
@@ -697,6 +753,9 @@ body:not(.dark-mode) .hero-overlay {
 .navbar-in-banner .logo-img {
     filter: brightness(0) invert(1);
 }
+
+.navbar-in-banner .nav-burger { color: #fff; }
+.navbar:not(.navbar-in-banner) .nav-burger { color: var(--nav-text, #111); }
 
 /* Ensure nav-inner clips don't cut the logo */
 .nav-inner {

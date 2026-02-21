@@ -45,3 +45,40 @@
         initTheme();
     }
 })();
+
+// ── Mobile burger menu ───────────────────────────────────────────
+(function () {
+    function initBurger() {
+        var burger = document.getElementById('nav-burger');
+        var navInner = burger && burger.closest('.nav-inner');
+        if (!burger || !navInner) return;
+
+        burger.addEventListener('click', function () {
+            var open = navInner.classList.toggle('nav-open');
+            burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+
+        // Close menu when a nav link is clicked
+        var links = navInner.querySelectorAll('.nav-links a');
+        links.forEach(function (link) {
+            link.addEventListener('click', function () {
+                navInner.classList.remove('nav-open');
+                burger.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!navInner.contains(e.target)) {
+                navInner.classList.remove('nav-open');
+                burger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBurger);
+    } else {
+        initBurger();
+    }
+})();
