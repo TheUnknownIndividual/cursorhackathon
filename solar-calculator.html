@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Panel Calculator - AZ Energy Hub</title>
+    <link rel="icon" href="tablogo.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="calculator.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo"><img src="logo.png" alt="AZ Energy Hub" class="logo-img"></a>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                <li><a href="solar-calculator.html" data-i18n="nav.calculator">Solar Calculator</a></li>
+                <li><a href="regulatory-framework.html" data-i18n="nav.framework">Framework</a></li>
+                <li><a href="projects.html" data-i18n="nav.projects">Projects</a></li>
+                <li><a href="news.html" data-i18n="nav.news">News</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="lang-switcher" id="lang-switcher">
+                    <button type="button" class="lang-switcher-btn" id="lang-switcher-btn" aria-label="Change language">
+                        <span id="currentLang">EN</span>
+                    </button>
+                </div>
+                <div class="theme-toggle-wrap">
+                <button type="button" id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" aria-pressed="false">
+                    <span class="theme-icon-sun" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.25C12.4142 1.25 12.75 1.58579 12.75 2V3C12.75 3.41421 12.4142 3.75 12 3.75C11.5858 3.75 11.25 3.41421 11.25 3V2C11.25 1.58579 11.5858 1.25 12 1.25Z" fill="#FFFCFC"/><path d="M12 6.25C8.82436 6.25 6.25 8.82436 6.25 12C6.25 15.1756 8.82436 17.75 12 17.75C15.1756 17.75 17.75 15.1756 17.75 12C17.75 8.82436 15.1756 6.25 12 6.25Z" fill="#FFFCFC"/><path d="M5.45928 4.39862C5.16638 4.10573 4.69151 4.10573 4.39862 4.39862C4.10572 4.69152 4.10572 5.16639 4.39862 5.45929L5.10572 6.16639C5.39862 6.45929 5.87349 6.45929 6.16638 6.16639C6.45928 5.8735 6.45928 5.39862 6.16638 5.10573L5.45928 4.39862Z" fill="#FFFCFC"/><path d="M22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H21C20.5858 12.75 20.25 12.4142 20.25 12C20.25 11.5858 20.5858 11.25 21 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12Z" fill="#FFFCFC"/><path d="M19.6014 5.45928C19.8943 5.16638 19.8943 4.69151 19.6014 4.39862C19.3085 4.10572 18.8336 4.10572 18.5407 4.39862L17.8336 5.10572C17.5407 5.39862 17.5407 5.87349 17.8336 6.16638C18.1265 6.45928 18.6014 6.45928 18.8943 6.16638L19.6014 5.45928Z" fill="#FFFCFC"/><path d="M12 20.25C12.4142 20.25 12.75 20.5858 12.75 21V22C12.75 22.4142 12.4142 22.75 12 22.75C11.5858 22.75 11.25 22.4142 11.25 22V21C11.25 20.5858 11.5858 20.25 12 20.25Z" fill="#FFFCFC"/><path d="M18.8943 17.8336C18.6014 17.5407 18.1266 17.5407 17.8337 17.8336C17.5408 18.1265 17.5408 18.6014 17.8337 18.8943L18.5408 19.6014C18.8337 19.8943 19.3085 19.8943 19.6014 19.6014C19.8943 19.3085 19.8943 18.8336 19.6014 18.5407L18.8943 17.8336Z" fill="#FFFCFC"/><path d="M3.75 12C3.75 12.4142 3.41421 12.75 3 12.75H2C1.58579 12.75 1.25 12.4142 1.25 12C1.25 11.5858 1.58579 11.25 2 11.25H3C3.41421 11.25 3.75 11.5858 3.75 12Z" fill="#FFFCFC"/><path d="M6.16632 18.8943C6.45921 18.6014 6.45921 18.1265 6.16632 17.8336C5.87342 17.5407 5.39855 17.5407 5.10566 17.8336L4.39855 18.5407C4.10566 18.8336 4.10566 19.3085 4.39855 19.6014C4.69144 19.8943 5.16632 19.8943 5.45921 19.6014L6.16632 18.8943Z" fill="#FFFCFC"/></svg></span>
+                    <span class="theme-icon-moon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5C16.4176 20.5 20.0476 17.1303 20.4608 12.8207C20.4801 12.6202 20.377 12.4277 20.1995 12.3324C20.0219 12.2372 19.8045 12.2578 19.6481 12.3848C18.7884 13.0824 17.6937 13.5 16.5 13.5C13.7386 13.5 11.5 11.2614 11.5 8.5C11.5 6.8599 12.2892 5.40423 13.5106 4.49167C13.6721 4.37101 13.7453 4.16516 13.6963 3.96961C13.6473 3.77406 13.4857 3.62706 13.2864 3.59678C12.8666 3.53302 12.437 3.5 12 3.5Z" fill="currentColor"/></svg></span>
+                </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 data-i18n="calculator.title">Solar Panel Calculator</h1>
+            <p data-i18n="calculator.sub">Estimate your solar panel requirements for grid-tied systems in Azerbaijan using real PVGIS data</p>
+        </div>
+    </section>
+
+    <section class="calculator-section">
+        <div class="container">
+
+            <!-- Net-Metering Information Banner -->
+            <div class="net-metering-banner">
+                <h3 data-i18n="calculator.netTitle">Azerbaijan's Active Consumer Support Mechanism</h3>
+                <p>
+                    <strong data-i18n="calculator.netGood">Good news!</strong>
+                    <span data-i18n="calculator.netDesc"> Azerbaijan implemented a net-metering system allowing you to sell excess solar energy to Azərenerji and use it later when needed.</span>
+                </p>
+
+                <p><strong data-i18n="calculator.keyBenefits">Key Benefits:</strong></p>
+                <ul>
+                    <li><strong data-i18n="calculator.systemSize">System size:</strong> <span data-i18n="calculator.systemSizeDesc">Install solar panels up to ~150 kW for residential/commercial use</span></li>
+                    <li><strong data-i18n="calculator.surplus">Surplus energy:</strong> <span data-i18n="calculator.surplusDesc">Any electricity you generate but don't use is fed into the national grid</span></li>
+                    <li><strong data-i18n="calculator.night">Night usage:</strong> <span data-i18n="calculator.nightDesc">The surplus offsets your consumption later—essentially "banking" energy for nighttime use</span></li>
+                    <li><strong data-i18n="calculator.financial">Financial savings:</strong> <span data-i18n="calculator.financialDesc">Reduce or eliminate your electricity bills through net-metering</span></li>
+                </ul>
+
+                <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.9;">
+                    <strong data-i18n="calculator.legal">Legal framework:</strong>
+                    <span data-i18n="calculator.legalDesc"> Approved by Cabinet of Ministers Decree No. 346 (September 28, 2023).</span>
+                </p>
+            </div>
+
+            <!-- Interactive Map for Location Selection -->
+            <div class="calc-card">
+                <h2 data-i18n="calculator.selectLocation">📍 Select Your Location</h2>
+                <p class="map-instructions" data-i18n="calculator.mapHint">Click on the map or drag the marker to select your location for accurate solar data</p>
+                <div id="map"></div>
+                <div class="selected-coords" id="selected-coords">
+                    <span data-i18n="calculator.selectedLabel">Selected</span>: <span id="coords-value">Baku (40.4093, 49.8671)</span>
+                </div>
+            </div>
+
+            <!-- Calculator Form -->
+            <div class="calc-card">
+                <div id="calculator-form">
+                    <h2 data-i18n="calculator.formTitle">System Calculator</h2>
+
+                    <div class="form-group">
+                        <label for="location" data-i18n="calculator.location">Location</label>
+                        <input type="text" id="location" placeholder="e.g., Baku, Ganja, or coordinates: 40.4093, 49.8671">
+                        <small data-i18n="calculator.locationHint">City name or latitude, longitude coordinates</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="house-size" data-i18n="calculator.houseSize">House Size (m²)</label>
+                        <input type="number" id="house-size" placeholder="e.g., 150" min="0">
+                        <small data-i18n="calculator.houseSizeHint">Enter your total house area in square meters</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="people-count" data-i18n="calculator.people">How many people live in your home?</label>
+                        <input type="number" id="people-count" placeholder="e.g., 4" min="1" max="20">
+                        <small data-i18n="calculator.peopleHint">Including infants and children</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="calculator.daytime">Is someone generally at home during daytime (9am-5pm)?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="radio" name="daytime-occupancy" value="yes" checked>
+                                <span data-i18n="calculator.yesHome">Yes - someone is usually home</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="radio" name="daytime-occupancy" value="no">
+                                <span data-i18n="calculator.noHome">No - home is empty during work hours</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="calculator.appliances">Additional Appliances</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="electric-cooking">
+                                <span data-i18n="calculator.electricCooking">Electric cooking (oven/induction)</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="heavy-ac">
+                                <span data-i18n="calculator.heavyAc">Heavy AC/heating usage (2-3 units daily)</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="water-heater">
+                                <span data-i18n="calculator.waterHeater">Electric water heater/boiler</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Options Toggle -->
+                    <button type="button" class="advanced-toggle-btn" onclick="toggleAdvancedOptions()">
+                        <span>🔧</span> <span data-i18n="calculator.advanced">Show Advanced Parameters</span>
+                    </button>
+
+                    <div id="advanced-options" class="advanced-options">
+                        <div class="form-group">
+                            <label for="roof-area-limit" data-i18n="calculator.roofLimit">Maximum Roof Space Available (m²) <span style="color: var(--primary-color);">★</span></label>
+                            <input type="number" id="roof-area-limit" placeholder="e.g., 50 (optional)" min="0" step="0.1">
+                            <small data-i18n="calculator.roofLimitHint">Leave empty for unlimited, or enter max roof area to limit panel count</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tilt-angle" data-i18n="calculator.tiltAngle">Panel Tilt Angle (degrees) <span style="color: var(--primary-color);">★</span></label>
+                            <input type="number" id="tilt-angle" placeholder="Leave empty for optimal" min="0" max="90">
+                            <small data-i18n="calculator.tiltAngleHint">Optional: 35-40° optimal for Azerbaijan. Leave empty to auto-calculate</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="panel-orientation" data-i18n="calculator.orientation">Panel Orientation (degrees) <span style="color: var(--primary-color);">★</span></label>
+                            <input type="number" id="panel-orientation" placeholder="Leave empty for South (180°)" min="0" max="360">
+                            <small data-i18n="calculator.orientationHint">Optional: 0°=North, 90°=East, 180°=South, 270°=West. Leave empty for optimal</small>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-calculate" onclick="calculateSystem()">
+                        <span id="calc-btn-text" data-i18n="calculator.calcBtn">Calculate System Size</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="results">
+                <div class="result-main-card">
+                    <div class="result-main" id="main-result">0</div>
+                    <div class="result-label" data-i18n="calculator.panelsNeeded">Solar Panels Needed</div>
+                </div>
+
+                <!-- Cost Hero — most important metric -->
+                <div class="cost-hero-card">
+                    <div class="cost-hero-value" id="estimated-cost">0</div>
+                    <div class="cost-hero-label" data-i18n="calculator.costLabel">Estimated System Cost (AZN)</div>
+                    <div class="cost-hero-sub">≈ <span id="cost-usd-equiv">0</span> USD</div>
+                </div>
+
+                <div class="result-details">
+                    <div class="detail-item">
+                        <div class="detail-value" id="system-size">0</div>
+                        <div class="detail-label" data-i18n="calculator.systemSizeKwp">System Size (kWp)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value" id="annual-production">0</div>
+                        <div class="detail-label" data-i18n="calculator.annualProd">Annual Production (kWh)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value" id="roof-area">0</div>
+                        <div class="detail-label" data-i18n="calculator.roofArea">Roof Area Needed (m²)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-value" id="solar-yield">0</div>
+                        <div class="detail-label" data-i18n="calculator.solarYield">Solar Yield (kWh/kWp/year)</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>📋 <span data-i18n="calculator.notesTitle">Important Notes</span></h3>
+                    <p><strong data-i18n="calculator.notesEstimate">This is an estimate.</strong> <span data-i18n="calculator.notesDesc">Actual system performance depends on:</span></p>
+                    <ul>
+                        <li data-i18n="calculator.note1">Roof orientation and tilt angle</li>
+                        <li data-i18n="calculator.note2">Shading from trees or buildings</li>
+                        <li data-i18n="calculator.note3">Panel quality and inverter efficiency</li>
+                        <li data-i18n="calculator.note4">Local climate variations</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong data-i18n="calculator.nextStepsLabel">Next steps:</strong> <span data-i18n="calculator.nextSteps">Consult with a certified solar installer for detailed site assessment and accurate system design.</span></p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;" id="pvgis-note"></p>
+                </div>
+
+                <!-- Environmental Impact -->
+                <div class="environmental-impact">
+                    <h3>🌍 <span data-i18n="calculator.envTitle">Environmental Impact</span></h3>
+                    <div class="impact-grid">
+                        <div class="impact-card">
+                            <div class="impact-icon">🚗</div>
+                            <div class="impact-value" id="co2-reduction">0</div>
+                            <div class="impact-label" data-i18n="calculator.co2Label">CO₂ Reduction (tons/year)</div>
+                        </div>
+                        <div class="impact-card">
+                            <div class="impact-icon">🌳</div>
+                            <div class="impact-value" id="tree-equivalent">0</div>
+                            <div class="impact-label" data-i18n="calculator.treeLabel">Equivalent Trees Planted</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optimization Tips (paywalled) -->
+                <div class="paywall-wrap" id="paywall-wrap">
+                    <div class="optimization-tips" id="optimization-tips">
+                        <h3>🎯 <span data-i18n="calculator.tipsTitle">System Optimization Recommendations</span></h3>
+                        <div class="tip-grid">
+                            <div class="tip-card">
+                                <h4>📐 <span data-i18n="calculator.tipTiltTitle">Optimal Tilt Angle</span></h4>
+                                <div class="tip-value" id="opt-tilt">35°</div>
+                                <p data-i18n="calculator.tipTiltDesc">This angle maximizes annual solar energy capture for your latitude</p>
+                            </div>
+                            <div class="tip-card">
+                                <h4>🧭 <span data-i18n="calculator.tipOrientTitle">Panel Orientation</span></h4>
+                                <div class="tip-value" data-i18n="calculator.tipOrientValue">South (180°)</div>
+                                <p data-i18n="calculator.tipOrientDesc">Face panels directly south for maximum exposure in Northern Hemisphere</p>
+                            </div>
+                            <div class="tip-card" title="You told PVGIS to assume that 14% of the DC energy produced by the panels is lost before it becomes usable AC electricity.">
+                                <h4 style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>📉 <span data-i18n="calculator.tipLossTitle">System Loss</span></span>
+                                    <span class="tip-info-badge" title="DC energy lost before becoming usable AC electricity (cables, inverter, temperature, wiring).">i</span>
+                                </h4>
+                                <div class="tip-value" id="system-loss-display">14%</div>
+                                <p data-i18n="calculator.tipLossDesc">DC energy lost before becoming usable AC electricity (cables, inverter, etc.)</p>
+                            </div>
+                            <div class="tip-card">
+                                <h4>🌳 <span data-i18n="calculator.tipShadeTitle">Shading Analysis</span></h4>
+                                <div class="tip-value" data-i18n="calculator.tipShadeValue">Critical!</div>
+                                <p data-i18n="calculator.tipShadeDesc">Ensure no shading from trees or buildings, especially 9am-3pm</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Paywall overlay (shown after calculation) -->
+                    <div class="paywall-overlay" id="paywall-overlay" style="display:none;">
+                        <div class="paywall-inner">
+                            <div class="paywall-lock">🔒</div>
+                            <p class="paywall-price">5 <span class="paywall-currency">₼</span></p>
+                            <p class="paywall-label">Ətraflı tövsiyələr üçün kilidini aç</p>
+                            <button class="btn-unlock" onclick="openPaymentModal()">Kilidi Aç — 5 Manat</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Analysis (revealed after payment) -->
+                <div class="ai-analysis" id="ai-analysis" style="display:none;">
+                    <h3>🤖 <span data-i18n="calculator.aiTitle">AI Analysis</span></h3>
+                    <div id="ai-content" class="ai-content"></div>
+                    <!-- disclaimer injected dynamically from OpenAI response -->
+                    <p class="ai-disclaimer" id="ai-disclaimer"></p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p data-i18n="index.footer">&copy; 2026 Azerbaijan Sustainable Energies Hub. Powering a greener future.</p>
+        </div>
+    </footer>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="payment-modal">
+        <div class="payment-modal-content">
+            <button class="payment-modal-close" onclick="closePaymentModal()" aria-label="Bağla">×</button>
+
+            <!-- Visual card preview -->
+            <div class="payment-card-preview">
+                <div class="card-chip"></div>
+                <div class="card-number-preview" id="card-number-preview">•••• •••• •••• ••••</div>
+                <div class="card-bottom-row">
+                    <div>
+                        <div class="card-field-label">Kart sahibi</div>
+                        <div class="card-name-preview" id="card-name-preview">AD SOYAD</div>
+                    </div>
+                    <div>
+                        <div class="card-field-label">Son tarix</div>
+                        <div class="card-expiry-preview" id="card-expiry-preview">MM/YY</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="payment-modal-title">Ödəniş Məlumatları</h2>
+            <p class="payment-modal-sub">Məbləğ: <strong>5.00 ₼</strong> — Sistem Optimallaşdırma + AI Analizi</p>
+
+            <div class="pay-field">
+                <label>Kart nömrəsi</label>
+                <input type="text" id="pay-card" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number" inputmode="numeric">
+            </div>
+            <div class="pay-row">
+                <div class="pay-field">
+                    <label>Son tarix</label>
+                    <input type="text" id="pay-expiry" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" inputmode="numeric">
+                </div>
+                <div class="pay-field">
+                    <label>CVV</label>
+                    <input type="password" id="pay-cvv" placeholder="•••" maxlength="3" autocomplete="cc-csc" inputmode="numeric">
+                </div>
+            </div>
+            <div class="pay-field">
+                <label>Kart üzərindəki ad</label>
+                <input type="text" id="pay-name" placeholder="AD SOYAD" autocomplete="cc-name">
+            </div>
+
+            <button class="btn-pay-submit" onclick="submitPayment()">
+                <span>🔒</span> Ödə — 5.00 ₼
+            </button>
+            <p class="pay-secure-note">🛡️ SSL ilə qorunur · Məlumatlarınız şifrələnir</p>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="payment-toast" class="payment-toast" aria-live="polite">
+        <div class="toast-icon-wrap">✓</div>
+        <div class="toast-text">
+            <strong>Uğurlu çıxarılma</strong>
+            <p>5.00 ₼ hesabınızdan çıxarıldı</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="i18n.js"></script>
+    <script src="theme.js"></script>
+    <script src="env-config.js"></script>
+    <script src="calculator.js"></script>
+</body>
+</html>

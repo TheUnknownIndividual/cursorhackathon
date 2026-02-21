@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulatory Framework - AZ Energy Hub</title>
+    <link rel="icon" href="tablogo.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="pages.css">
+    <style>
+        /* ── Framework page – unique warm design ── */
+        .fw-wrap {
+            padding: 2.5rem 0 4.5rem;
+            background: var(--bg);
+        }
+
+        /* Stats bar */
+        .fw-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .fw-stat {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .fw-stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .fw-stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.1;
+        }
+        .fw-stat-lbl {
+            font-size: 0.78rem;
+            color: var(--text-dark);
+            opacity: 0.65;
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+        body.dark-mode .fw-stat { border-color: rgba(255,255,255,0.06); }
+
+        /* Controls */
+        .fw-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1.75rem;
+        }
+        .fw-search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+        }
+        .fw-search-wrap svg {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.45;
+            pointer-events: none;
+        }
+        .fw-search {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.4rem;
+            border: 1.5px solid rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .fw-search:focus { outline: none; border-color: var(--primary-color); }
+        body.dark-mode .fw-search { border-color: rgba(255,255,255,0.12); }
+
+        .fw-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .fw-filter-btn {
+            padding: 0.45rem 1rem;
+            border-radius: 9999px;
+            border: 1.5px solid rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .fw-filter-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        .fw-filter-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+        body.dark-mode .fw-filter-btn { border-color: rgba(255,255,255,0.14); }
+
+        /* ── Filter Selector ── */
+        .fw-filter-selector {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        body.dark-mode .fw-filter-selector { border-color: rgba(255,255,255,0.06); }
+        .fw-fs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.85rem;
+        }
+        .fw-fs-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            opacity: 0.5;
+        }
+        .fw-fs-clear {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 0;
+        }
+        .fw-fs-zone {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            min-height: 2.4rem;
+            align-items: flex-start;
+        }
+        .fw-fs-placeholder {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.35;
+            align-self: center;
+            font-style: italic;
+        }
+        .fw-fs-divider {
+            border: none;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            margin: 0.85rem 0;
+        }
+        body.dark-mode .fw-fs-divider { border-top-color: rgba(255,255,255,0.07); }
+        .fw-fs-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            transition: transform 0.18s, opacity 0.18s, box-shadow 0.18s;
+        }
+        .fw-fs-tag:hover { transform: translateY(-2px); box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        @keyframes tagFloat {
+            from { opacity: 0; transform: translateY(6px) scale(0.92); }
+            to   { opacity: 1; transform: translateY(0)   scale(1); }
+        }
+        .fw-fs-tag.animating { animation: tagFloat 0.22s ease forwards; }
+        .fw-fs-tag[data-color="green"]  { background: rgba(90,154,110,0.1);  border-color: rgba(90,154,110,0.3);  color: #2d6a4f; }
+        .fw-fs-tag[data-color="amber"]  { background: rgba(245,166,35,0.1);  border-color: rgba(245,166,35,0.3);  color: #92600a; }
+        .fw-fs-tag[data-color="blue"]   { background: rgba(91,155,213,0.1);  border-color: rgba(91,155,213,0.3);  color: #2e74b5; }
+        .fw-fs-tag[data-color="purple"] { background: rgba(162,112,222,0.1); border-color: rgba(162,112,222,0.3); color: #7030a0; }
+        .fw-fs-tag[data-color="teal"]   { background: rgba(78,203,141,0.1);  border-color: rgba(78,203,141,0.3);  color: #1fad6a; }
+        .fw-fs-tag[data-color="rose"]   { background: rgba(220,80,80,0.1);   border-color: rgba(220,80,80,0.3);   color: #cc3333; }
+        body.dark-mode .fw-fs-tag[data-color="green"]  { background: rgba(90,154,110,0.18); }
+        body.dark-mode .fw-fs-tag[data-color="amber"]  { background: rgba(245,166,35,0.18); }
+        body.dark-mode .fw-fs-tag[data-color="blue"]   { background: rgba(91,155,213,0.18); }
+        body.dark-mode .fw-fs-tag[data-color="purple"] { background: rgba(162,112,222,0.18); }
+        body.dark-mode .fw-fs-tag[data-color="teal"]   { background: rgba(78,203,141,0.18); }
+        body.dark-mode .fw-fs-tag[data-color="rose"]   { background: rgba(220,80,80,0.18); }
+        .fw-fs-zone--selected .fw-fs-tag {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            outline: 2px solid currentColor;
+            outline-offset: 1px;
+        }
+        .fw-fs-count {
+            font-size: 0.65rem;
+            font-weight: 700;
+            opacity: 0.7;
+            background: rgba(0,0,0,0.08);
+            border-radius: 9999px;
+            padding: 0.05rem 0.4rem;
+        }
+
+        /* ── Section headers ── */
+        .fw-section { margin-bottom: 3.5rem; }
+        .fw-section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.65rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 2px solid var(--light-color);
+        }
+        body.dark-mode .fw-section-header { border-bottom-color: rgba(255,255,255,0.08); }
+        .fw-section-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            color: var(--dark-color);
+            text-transform: uppercase;
+        }
+        .fw-section-count {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background: rgba(90,154,110,0.1);
+            padding: 0.15rem 0.55rem;
+            border-radius: 9999px;
+        }
+
+        /* ── Carousel ── */
+        .fw-carousel-wrap { position: relative; padding: 0 2.5rem; }
+        .fw-carousel {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 0.25rem 0.1rem 1rem;
+            scrollbar-width: none;
+        }
+        .fw-carousel::-webkit-scrollbar { display: none; }
+
+        .fw-carousel-btn {
+            position: absolute;
+            top: 42%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.75;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 5;
+        }
+        .fw-carousel-btn:hover { opacity: 1; transform: translateY(-50%) scale(1.08); }
+        .fw-carousel-btn-left { left: 0; }
+        .fw-carousel-btn-right { right: 0; }
+
+        /* ── Cards ── */
+        .fw-card {
+            min-width: 285px;
+            max-width: 285px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: box-shadow 0.25s, border-left-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+        .fw-card:hover {
+            box-shadow: var(--shadow-hover);
+            border-left-color: var(--secondary-color);
+        }
+        .fw-card.open {
+            border-left-color: var(--dark-color);
+        }
+
+        .fw-card-top { padding: 1.1rem 1.1rem 0; }
+        .fw-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            margin-bottom: 0.6rem;
+        }
+        .fw-card-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            line-height: 1;
+            margin-top: 0.1rem;
+        }
+        .fw-card-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            line-height: 1.35;
+        }
+        .fw-card-date {
+            font-size: 0.72rem;
+            color: var(--text-dark);
+            opacity: 0.5;
+            margin-top: 0.2rem;
+        }
+
+        .fw-focus-badge {
+            display: inline-block;
+            background: var(--light-color);
+            color: var(--text-dark);
+            padding: 0.18rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.65rem;
+            opacity: 0.85;
+        }
+
+        .fw-key-points { list-style: none; margin: 0; padding: 0 1.1rem; }
+        .fw-key-points li {
+            position: relative;
+            padding-left: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.78;
+            margin-bottom: 0.35rem;
+            line-height: 1.45;
+        }
+        .fw-key-points li::before {
+            content: '–';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* ── Expandable details ── */
+        .fw-card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .fw-card.open .fw-card-details { max-height: 700px; }
+
+        .fw-details-inner {
+            margin: 0.6rem 1.1rem 0;
+            padding: 0.8rem;
+            background: rgba(90,154,110,0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(90,154,110,0.12);
+        }
+        body.dark-mode .fw-details-inner {
+            background: rgba(90,154,110,0.08);
+            border-color: rgba(90,154,110,0.18);
+        }
+        .fw-details-inner p {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            line-height: 1.65;
+            margin-bottom: 0.55rem;
+        }
+        .fw-details-inner ul { padding-left: 1rem; margin: 0 0 0.5rem; }
+        .fw-details-inner ul li {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            opacity: 0.82;
+            margin-bottom: 0.28rem;
+            line-height: 1.45;
+        }
+        .fw-doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: 0.3rem;
+        }
+        .fw-doc-link:hover { text-decoration: underline; }
+
+        /* ── Card footer ── */
+        .fw-card-footer {
+            margin-top: auto;
+            padding: 0.65rem 1.1rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ── Status badges ── */
+        .fw-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .fw-status::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        .fw-status-active    { background: #e8f5ed; color: #2d6a4f; }
+        .fw-status-implemented { background: #e3f0f8; color: #1a5276; }
+        .fw-status-progress  { background: #fef9e7; color: #7d6608; }
+        body.dark-mode .fw-status-active    { background: rgba(45,106,79,0.2);  color: #6fcf97; }
+        body.dark-mode .fw-status-implemented { background: rgba(26,82,118,0.2); color: #85c1e9; }
+        body.dark-mode .fw-status-progress  { background: rgba(125,102,8,0.2);  color: #f9ca24; }
+
+        /* ── "Details" toggle label ── */
+        .fw-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            padding: 0;
+            pointer-events: none; /* card div handles click */
+        }
+        .fw-toggle-chevron {
+            display: inline-block;
+            transition: transform 0.28s;
+            font-style: normal;
+        }
+        .fw-card.open .fw-toggle-chevron { transform: rotate(180deg); }
+
+        /* ── No results ── */
+        .fw-no-results {
+            display: none;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-dark);
+            opacity: 0.45;
+        }
+
+        @media (max-width: 768px) {
+            .fw-stats { grid-template-columns: repeat(2, 1fr); }
+            .fw-carousel-wrap { padding: 0 2rem; }
+            .fw-card { min-width: 250px; max-width: 250px; }
+            .fw-cat-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .fw-stats { grid-template-columns: repeat(2, 1fr); }
+            .fw-cat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="logo"><img src="logo.png" alt="AZ Energy Hub" class="logo-img"></a>
+            <ul class="nav-links">
+                <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                <li><a href="solar-calculator.html" data-i18n="nav.calculator">Solar Calculator</a></li>
+                <li><a href="regulatory-framework.html" data-i18n="nav.framework">Framework</a></li>
+                <li><a href="projects.html" data-i18n="nav.projects">Projects</a></li>
+                <li><a href="news.html" data-i18n="nav.news">News</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="lang-switcher" id="lang-switcher">
+                    <button type="button" class="lang-switcher-btn" id="lang-switcher-btn" aria-label="Change language">
+                        <span id="currentLang">EN</span>
+                    </button>
+                </div>
+                <div class="theme-toggle-wrap">
+                <button type="button" id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" aria-pressed="false">
+                    <span class="theme-icon-sun" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.25C12.4142 1.25 12.75 1.58579 12.75 2V3C12.75 3.41421 12.4142 3.75 12 3.75C11.5858 3.75 11.25 3.41421 11.25 3V2C11.25 1.58579 11.5858 1.25 12 1.25Z" fill="#FFFCFC"/><path d="M12 6.25C8.82436 6.25 6.25 8.82436 6.25 12C6.25 15.1756 8.82436 17.75 12 17.75C15.1756 17.75 17.75 15.1756 17.75 12C17.75 8.82436 15.1756 6.25 12 6.25Z" fill="#FFFCFC"/><path d="M5.45928 4.39862C5.16638 4.10573 4.69151 4.10573 4.39862 4.39862C4.10572 4.69152 4.10572 5.16639 4.39862 5.45929L5.10572 6.16639C5.39862 6.45929 5.87349 6.45929 6.16638 6.16639C6.45928 5.8735 6.45928 5.39862 6.16638 5.10573L5.45928 4.39862Z" fill="#FFFCFC"/><path d="M22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H21C20.5858 12.75 20.25 12.4142 20.25 12C20.25 11.5858 20.5858 11.25 21 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12Z" fill="#FFFCFC"/><path d="M19.6014 5.45928C19.8943 5.16638 19.8943 4.69151 19.6014 4.39862C19.3085 4.10572 18.8336 4.10572 18.5407 4.39862L17.8336 5.10572C17.5407 5.39862 17.5407 5.87349 17.8336 6.16638C18.1265 6.45928 18.6014 6.45928 18.8943 6.16638L19.6014 5.45928Z" fill="#FFFCFC"/><path d="M12 20.25C12.4142 20.25 12.75 20.5858 12.75 21V22C12.75 22.4142 12.4142 22.75 12 22.75C11.5858 22.75 11.25 22.4142 11.25 22V21C11.25 20.5858 11.5858 20.25 12 20.25Z" fill="#FFFCFC"/><path d="M18.8943 17.8336C18.6014 17.5407 18.1266 17.5407 17.8337 17.8336C17.5408 18.1265 17.5408 18.6014 17.8337 18.8943L18.5408 19.6014C18.8337 19.8943 19.3085 19.8943 19.6014 19.6014C19.8943 19.3085 19.8943 18.8336 19.6014 18.5407L18.8943 17.8336Z" fill="#FFFCFC"/><path d="M3.75 12C3.75 12.4142 3.41421 12.75 3 12.75H2C1.58579 12.75 1.25 12.4142 1.25 12C1.25 11.5858 1.58579 11.25 2 11.25H3C3.41421 11.25 3.75 11.5858 3.75 12Z" fill="#FFFCFC"/><path d="M6.16632 18.8943C6.45921 18.6014 6.45921 18.1265 6.16632 17.8336C5.87342 17.5407 5.39855 17.5407 5.10566 17.8336L4.39855 18.5407C4.10566 18.8336 4.10566 19.3085 4.39855 19.6014C4.69144 19.8943 5.16632 19.8943 5.45921 19.6014L6.16632 18.8943Z" fill="#FFFCFC"/></svg></span>
+                    <span class="theme-icon-moon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5C16.4176 20.5 20.0476 17.1303 20.4608 12.8207C20.4801 12.6202 20.377 12.4277 20.1995 12.3324C20.0219 12.2372 19.8045 12.2578 19.6481 12.3848C18.7884 13.0824 17.6937 13.5 16.5 13.5C13.7386 13.5 11.5 11.2614 11.5 8.5C11.5 6.8599 12.2892 5.40423 13.5106 4.49167C13.6721 4.37101 13.7453 4.16516 13.6963 3.96961C13.6473 3.77406 13.4857 3.62706 13.2864 3.59678C12.8666 3.53302 12.437 3.5 12 3.5Z" fill="currentColor"/></svg></span>
+                </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 data-i18n="framework.title">Azerbaijan's Regulatory Framework</h1>
+            <p data-i18n="framework.sub">Comprehensive policy enablers and legal instruments for renewable energy transition</p>
+        </div>
+    </section>
+
+    <div class="fw-wrap">
+        <div class="container">
+
+            <!-- Stats -->
+            <div class="fw-stats">
+                <div class="fw-stat" onclick="scrollToFwSection('laws')">
+                    <div class="fw-stat-val">20</div>
+                    <div class="fw-stat-lbl">Policy Frameworks</div>
+                </div>
+                <div class="fw-stat" onclick="scrollToFwSection('commitments')">
+                    <div class="fw-stat-val">6.5</div>
+                    <div class="fw-stat-lbl">GW Target by 2030</div>
+                </div>
+                <div class="fw-stat" onclick="scrollToFwSection('commitments')">
+                    <div class="fw-stat-val">35%</div>
+                    <div class="fw-stat-lbl">RES Share Target</div>
+                </div>
+                <div class="fw-stat" onclick="scrollToFwSection('laws')">
+                    <div class="fw-stat-val">2021</div>
+                    <div class="fw-stat-lbl">RES Law Enacted</div>
+                </div>
+            </div>
+
+            <!-- Search + Filter -->
+            <div class="fw-controls">
+                <div class="fw-search-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="text" class="fw-search" id="fwSearch" placeholder="Search laws, policies, frameworks…">
+                </div>
+                <div class="fw-filters">
+                    <button class="fw-filter-btn active" data-filter="all">All</button>
+                    <button class="fw-filter-btn" data-filter="active">Active</button>
+                    <button class="fw-filter-btn" data-filter="implemented">Implemented</button>
+                    <button class="fw-filter-btn" data-filter="progress">In Progress</button>
+                </div>
+            </div>
+
+            <!-- Filter Selector -->
+            <div class="fw-filter-selector" id="fwFilterSelector">
+                <div class="fw-fs-header">
+                    <span class="fw-fs-label">Filter by Category</span>
+                    <button class="fw-fs-clear" id="fwFsClear" style="display:none">Clear all</button>
+                </div>
+                <div class="fw-fs-zone fw-fs-zone--selected" id="fwFsSelected">
+                    <span class="fw-fs-placeholder" id="fwFsPlaceholder">Select a category to filter — or browse all sections below</span>
+                </div>
+                <div class="fw-fs-divider"></div>
+                <div class="fw-fs-zone fw-fs-zone--available" id="fwFsAvailable">
+                    <button class="fw-fs-tag" data-section="laws"         data-color="green" >📜 Laws <span class="fw-fs-count">8</span></button>
+                    <button class="fw-fs-tag" data-section="commitments"  data-color="amber" >🎯 Commitments <span class="fw-fs-count">4</span></button>
+                    <button class="fw-fs-tag" data-section="investment"   data-color="blue"  >💼 Investment <span class="fw-fs-count">2</span></button>
+                    <button class="fw-fs-tag" data-section="institutions" data-color="purple">🏛️ Institutions <span class="fw-fs-count">2</span></button>
+                    <button class="fw-fs-tag" data-section="orders"       data-color="teal"  >📋 Ministry Orders <span class="fw-fs-count">1</span></button>
+                    <button class="fw-fs-tag" data-section="other"        data-color="rose"  >📚 Other Policies <span class="fw-fs-count">3</span></button>
+                </div>
+            </div>
+
+            <div id="fw-no-results" class="fw-no-results">No frameworks match your search.</div>
+
+            <!-- ── LAWS ── -->
+            <div class="fw-section" id="laws">
+                <div class="fw-section-header">
+                    <span class="fw-section-title">Laws &amp; Legislative Framework</span>
+                    <span class="fw-section-count">8</span>
+                </div>
+                <div class="fw-carousel-wrap">
+                    <button class="fw-carousel-btn fw-carousel-btn-left" onclick="scrollFwCarousel('car-laws',-1)" aria-label="Previous">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="fw-carousel" id="car-laws">
+
+                        <!-- Presidential Order -->
+                        <div class="fw-card" data-status="implemented">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">📋</span>
+                                    <div>
+                                        <div class="fw-card-title">Presidential Order on Energy Sector Reforms</div>
+                                        <div class="fw-card-date">Order №1209 · 29 May 2019</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Accelerating energy-sector reforms</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Legal basis for liberalising power sector</li>
+                                <li>Increasing competition in energy markets</li>
+                                <li>Transition to green energy &amp; efficiency</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>This Presidential Order set out a roadmap for liberalising Azerbaijan's electricity market, introducing competitive pricing, and preparing the legal ground for major renewable energy investments over the following decade.</p>
+                                    <ul>
+                                        <li>Mandated unbundling of generation, transmission, and distribution</li>
+                                        <li>Directed tariff reform towards cost-reflective pricing</li>
+                                        <li>Paved way for independent power producers (IPPs)</li>
+                                        <li>Referenced in subsequent RES Law and Energy Law</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-implemented">Implemented</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- RES Law -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">⚖️</span>
+                                    <div>
+                                        <div class="fw-card-title">Renewable Energy Sources Law</div>
+                                        <div class="fw-card-date">Law №339-VIQ · 31 May 2021</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Framework law for renewables</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Defines RES categories and legal/economic rules</li>
+                                <li>Long-term offtake contracts (PPAs)</li>
+                                <li>Priority grid-connection for renewables</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>The cornerstone legislation for Azerbaijan's renewable energy sector. It defines what qualifies as a renewable source, establishes the rights and duties of producers and grid operators, and sets out the auction mechanism for new capacity.</p>
+                                    <ul>
+                                        <li>Guarantees state offtake contracts for up to 20 years</li>
+                                        <li>Establishes net-metering for consumers up to 150 kW</li>
+                                        <li>Requires grid operators to accept RES electricity</li>
+                                        <li>Basis for all subsequent auctions by AREA</li>
+                                    </ul>
+                                    <a class="fw-doc-link" href="https://e-qanun.az/framework/46730" target="_blank" rel="noopener">📄 View official text (e-qanun.az) ↗</a>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Azerbaijan 2030 -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🎯</span>
+                                    <div>
+                                        <div class="fw-card-title">Azerbaijan 2030: National Priorities</div>
+                                        <div class="fw-card-date">Presidential Decree · Feb 2021</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Clean environment priority</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>30% renewable energy by 2030</li>
+                                <li>Green growth targets &amp; Green Energy Zones</li>
+                                <li>Paris Agreement alignment</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>The Azerbaijan 2030 National Priorities decree defined five pillars for national development, with a "clean environment and green growth" pillar directly supporting the energy transition agenda.</p>
+                                    <ul>
+                                        <li>35% share of electricity from renewables by 2030</li>
+                                        <li>Green Energy Zones for Karabakh and Nakhchivan</li>
+                                        <li>Hydrogen &amp; offshore wind feasibility commitments</li>
+                                        <li>Integrated with NDC submitted to UNFCCC</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Energy Efficiency Law -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">⚡</span>
+                                    <div>
+                                        <div class="fw-card-title">Law on Energy Efficiency</div>
+                                        <div class="fw-card-date">Law №359-VIQ · July 2021</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Efficient use of energy resources</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Mandatory energy audits for large consumers</li>
+                                <li>Energy efficiency fund established</li>
+                                <li>ESCO contracts &amp; incentives</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Passed alongside the RES Law in 2021, this legislation complements Azerbaijan's renewable push by reducing overall demand, making the transition more achievable and cost-effective.</p>
+                                    <ul>
+                                        <li>Enterprises >1,000 toe/year must conduct energy audits</li>
+                                        <li>Building energy performance certification introduced</li>
+                                        <li>State fund provides low-interest loans for efficiency measures</li>
+                                        <li>Energy managers required for large public facilities</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- PPP Law -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🤝</span>
+                                    <div>
+                                        <div class="fw-card-title">Public-Private Partnership Law</div>
+                                        <div class="fw-card-date">Law · December 2022</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">State-private collaboration</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Up to 30-year contract terms</li>
+                                <li>Investment stability guarantees</li>
+                                <li>Attracts major international developers</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>The PPP Law provides the legal foundation for large-scale renewable energy projects developed in partnership between the state and private investors, ensuring long-term revenue certainty.</p>
+                                    <ul>
+                                        <li>Government guarantees on contractual obligations</li>
+                                        <li>Dispute resolution via international arbitration</li>
+                                        <li>Used by Masdar, ACWA Power, and other IPPs</li>
+                                        <li>Supports BOOT and BOT models for power plants</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Law on Energy -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">📊</span>
+                                    <div>
+                                        <div class="fw-card-title">Law on Energy (Energetika haqqında)</div>
+                                        <div class="fw-card-date">Law №1006-VIQ · Oct 2023</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">New fundamental energy law</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Replaces 1998 Energy Law</li>
+                                <li>Market-based energy activities</li>
+                                <li>Protecting consumer rights</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>A landmark update that replaced the outdated 1998 Law on Energy, bringing Azerbaijan's primary energy legislation in line with modern market principles and EU energy law concepts.</p>
+                                    <ul>
+                                        <li>Defines roles of all energy sector participants</li>
+                                        <li>Introduces concept of "active consumer" (prosumer)</li>
+                                        <li>Establishes independent regulation principles</li>
+                                        <li>Framework for energy storage and smart grids</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Law on Electric Power -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">💡</span>
+                                    <div>
+                                        <div class="fw-card-title">Law on Electric Power</div>
+                                        <div class="fw-card-date">Law №858-VIQ · Apr 2023</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Modern power sector regulation</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Unbundling of generation, transmission, distribution</li>
+                                <li>Active consumer (prosumer) rules</li>
+                                <li>Market liberalisation roadmap</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>This law governs the production, transmission, distribution, and sale of electricity, establishing clear rules for all participants in the electricity value chain.</p>
+                                    <ul>
+                                        <li>Regulates grid access rights for renewable producers</li>
+                                        <li>Net-metering rules codified at legislative level</li>
+                                        <li>Protects consumers from discriminatory pricing</li>
+                                        <li>Cabinet Decree No. 346 (Sept 2023) implements net-metering provisions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- EIA Law -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🌳</span>
+                                    <div>
+                                        <div class="fw-card-title">Law on Environmental Impact Assessment</div>
+                                        <div class="fw-card-date">Law №1175-VQ · June 2018</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Environmental protection</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Mandatory EIA for all energy projects</li>
+                                <li>Strategic environmental assessment</li>
+                                <li>Public participation in decisions</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Requires thorough environmental impact assessment before renewable energy projects can receive permits, ensuring ecological considerations are integrated into energy planning.</p>
+                                    <ul>
+                                        <li>Covers solar, wind, hydro, and hybrid projects</li>
+                                        <li>Public consultations mandatory for projects >10 MW</li>
+                                        <li>Strategic SEA for national energy plans</li>
+                                        <li>Aligns with Espoo Convention and EU EIA Directive</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="fw-carousel-btn fw-carousel-btn-right" onclick="scrollFwCarousel('car-laws',1)" aria-label="Next">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── COMMITMENTS ── -->
+            <div class="fw-section" id="commitments">
+                <div class="fw-section-header">
+                    <span class="fw-section-title">National Commitments &amp; Targets</span>
+                    <span class="fw-section-count">4</span>
+                </div>
+                <div class="fw-carousel-wrap">
+                    <button class="fw-carousel-btn fw-carousel-btn-left" onclick="scrollFwCarousel('car-commit',-1)" aria-label="Previous">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="fw-carousel" id="car-commit">
+
+                        <!-- Paris NDC -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🌍</span>
+                                    <div>
+                                        <div class="fw-card-title">Paris Agreement &amp; NDC Commitments</div>
+                                        <div class="fw-card-date">Updated NDC · 2021</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">40% emissions reduction by 2050</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>40% GHG cut by 2050 (unconditional)</li>
+                                <li>30% renewable energy share by 2030</li>
+                                <li>Green transition roadmap</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Azerbaijan's updated Nationally Determined Contribution submitted to the UNFCCC sets ambitious climate targets and underpins the entire policy framework for energy transition.</p>
+                                    <ul>
+                                        <li>Unconditional: 35% GHG reduction vs. BAU by 2030</li>
+                                        <li>Conditional (with int'l support): 40% reduction</li>
+                                        <li>30% RES in electricity mix by 2030</li>
+                                        <li>Adaptation measures for agriculture and water sectors</li>
+                                    </ul>
+                                    <a class="fw-doc-link" href="https://unfccc.int/sites/default/files/NDC/2022-06/Azerbaijan%20NDC.pdf" target="_blank" rel="noopener">📄 View NDC Document ↗</a>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Capacity Targets -->
+                        <div class="fw-card" data-status="progress">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">⚡</span>
+                                    <div>
+                                        <div class="fw-card-title">Renewable Capacity Targets</div>
+                                        <div class="fw-card-date">Ministry of Energy · 2019–2030</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">6.5 GW target capacity by 2030</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>1.5 GW+ new capacity by 2027</li>
+                                <li>~30% installed capacity from RES</li>
+                                <li>Solar, wind, small hydro projects</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>The Ministry of Energy's capacity roadmap breaks down the 6.5 GW target into technology-specific milestones and project pipelines managed through AREA auctions.</p>
+                                    <ul>
+                                        <li>Solar PV: ~2.5 GW by 2030</li>
+                                        <li>Wind: ~2.0 GW by 2030 (onshore + offshore feasibility)</li>
+                                        <li>Hydro: ~1.5 GW (new + rehabilitated)</li>
+                                        <li>Bioenergy and other: ~0.5 GW</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-progress">In Progress</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- COP29 -->
+                        <div class="fw-card" data-status="implemented">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🌐</span>
+                                    <div>
+                                        <div class="fw-card-title">COP29 Leadership</div>
+                                        <div class="fw-card-date">November 2024 · Baku</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Global climate leadership platform</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Hosted COP29 in Baku (Nov 2024)</li>
+                                <li>Tripling renewable deployment pledge</li>
+                                <li>Green hydrogen &amp; energy storage initiatives</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Azerbaijan's hosting of COP29 raised its international profile and resulted in major new pledges and partnerships that will accelerate the domestic energy transition.</p>
+                                    <ul>
+                                        <li>Signed tripling of renewable energy pledge (global)</li>
+                                        <li>Announced green hydrogen roadmap with EU partners</li>
+                                        <li>ACWA Power committed an additional 1.5 GW</li>
+                                        <li>New offshore wind studies launched in Caspian Sea</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-implemented">Completed</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Green Energy Zones -->
+                        <div class="fw-card" data-status="progress">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🌿</span>
+                                    <div>
+                                        <div class="fw-card-title">Green Energy Zones Initiative</div>
+                                        <div class="fw-card-date">Presidential Orders · 2021–2024</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Karabakh, Nakhchivan &amp; Green Corridors</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Karabakh: Ufug &amp; Shams (2×50 MW)</li>
+                                <li>Nakhchivan: 1,000+ MW agreements</li>
+                                <li>Green Corridors to Europe &amp; Central Asia</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Designated geographic zones with streamlined permitting and preferential conditions for renewable development, particularly in recently liberated territories and remote regions.</p>
+                                    <ul>
+                                        <li>Karabakh Green Energy Zone: 27 GW theoretical potential</li>
+                                        <li>ACWA Power leads Nakhchivan 1 GW solar project</li>
+                                        <li>TANKÖ (Trans-Anatolian-Caucasus) green power corridor</li>
+                                        <li>AZURE subsea cable to Romania/Hungary under development</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-progress">In Progress</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="fw-carousel-btn fw-carousel-btn-right" onclick="scrollFwCarousel('car-commit',1)" aria-label="Next">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── INVESTMENT ── -->
+            <div class="fw-section" id="investment">
+                <div class="fw-section-header">
+                    <span class="fw-section-title">Investment Incentives &amp; Frameworks</span>
+                    <span class="fw-section-count">2</span>
+                </div>
+                <div class="fw-carousel-wrap">
+                    <button class="fw-carousel-btn fw-carousel-btn-left" onclick="scrollFwCarousel('car-invest',-1)" aria-label="Previous">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="fw-carousel" id="car-invest">
+
+                        <!-- Tax Incentives -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">💰</span>
+                                    <div>
+                                        <div class="fw-card-title">Tax Incentives &amp; Investment Benefits</div>
+                                        <div class="fw-card-date">Tax Code · Updated 2025</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Up to 30-year tax holidays</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Full exemption from corporate tax (30 yrs)</li>
+                                <li>100% property &amp; land tax exemption</li>
+                                <li>VAT &amp; customs duty waived on equipment</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Azerbaijan offers one of the most competitive fiscal packages for renewable energy investors in the region, applying across generation, grid connection, and residential installations.</p>
+                                    <ul>
+                                        <li>Residential solar up to 150 kW: fully tax-exempt</li>
+                                        <li>Profit tax holiday for 7–10 years for small projects</li>
+                                        <li>Zero import duty on turbines, panels, inverters</li>
+                                        <li>Simplified licensing: single-window through AREA</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- PPA Framework -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">📋</span>
+                                    <div>
+                                        <div class="fw-card-title">PPA &amp; Auction Framework</div>
+                                        <div class="fw-card-date">RES Law · 2021</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Guaranteed offtake contracts</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Long-term PPAs with state companies</li>
+                                <li>Competitive tender mechanism</li>
+                                <li>Fixed tariff guarantees &amp; revenue certainty</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>The auction framework managed by AREA runs competitive tenders for new renewable capacity, with winners signing long-term Power Purchase Agreements with Azərenerji.</p>
+                                    <ul>
+                                        <li>Tariffs set competitively; recent solar: ~$0.02/kWh</li>
+                                        <li>Denominated in USD with guaranteed conversion</li>
+                                        <li>State guarantees payment obligations</li>
+                                        <li>Force-majeure clauses protect investors</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="fw-carousel-btn fw-carousel-btn-right" onclick="scrollFwCarousel('car-invest',1)" aria-label="Next">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── INSTITUTIONS ── -->
+            <div class="fw-section" id="institutions">
+                <div class="fw-section-header">
+                    <span class="fw-section-title">Institutional Framework</span>
+                    <span class="fw-section-count">2</span>
+                </div>
+                <div class="fw-carousel-wrap">
+                    <button class="fw-carousel-btn fw-carousel-btn-left" onclick="scrollFwCarousel('car-inst',-1)" aria-label="Previous">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="fw-carousel" id="car-inst">
+
+                        <!-- AREA -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🏛️</span>
+                                    <div>
+                                        <div class="fw-card-title">Azerbaijan Renewable Energy Agency (AREA)</div>
+                                        <div class="fw-card-date">Under Ministry of Energy</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">RES promotion and project management</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Manages auctions &amp; RES deployment</li>
+                                <li>Provides capacity and generation data</li>
+                                <li>Investor guidelines &amp; one-stop services</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>AREA acts as the central coordination body for Azerbaijan's renewable energy sector, bridging government policy and private investment.</p>
+                                    <ul>
+                                        <li>Runs competitive auctions for new capacity</li>
+                                        <li>Issues licenses and permits for RES projects</li>
+                                        <li>Maintains public RES statistics and capacity registry</li>
+                                        <li>Coordinates with SOCAR, Azərenerji, and international DFIs</li>
+                                    </ul>
+                                    <a class="fw-doc-link" href="https://area.gov.az" target="_blank" rel="noopener">🌐 Visit AREA website ↗</a>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Technical Standards -->
+                        <div class="fw-card" data-status="progress">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">⚙️</span>
+                                    <div>
+                                        <div class="fw-card-title">Technical Standards &amp; Quality Control</div>
+                                        <div class="fw-card-date">Regulatory Framework</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Grid codes and certification</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Grid connection standards</li>
+                                <li>Equipment certification procedures</li>
+                                <li>Training for technicians</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Technical standards are being harmonised with IEC and EU grid codes to ensure safe and efficient integration of renewable generation into the national grid.</p>
+                                    <ul>
+                                        <li>Grid code update underway with EBRD support</li>
+                                        <li>Inverter and panel certification based on IEC standards</li>
+                                        <li>AZENERJI grid connection technical requirements published</li>
+                                        <li>Technician training programmes with IRENA support</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-progress">In Development</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="fw-carousel-btn fw-carousel-btn-right" onclick="scrollFwCarousel('car-inst',1)" aria-label="Next">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── MINISTRY ORDERS ── -->
+            <div class="fw-section" id="orders">
+                <div class="fw-section-header">
+                    <span class="fw-section-title">Ministry Orders &amp; Administrative Decisions</span>
+                    <span class="fw-section-count">1</span>
+                </div>
+                <div class="fw-carousel-wrap">
+                    <button class="fw-carousel-btn fw-carousel-btn-left" onclick="scrollFwCarousel('car-orders',-1)" aria-label="Previous">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="fw-carousel" id="car-orders">
+
+                        <!-- F-95 -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">📋</span>
+                                    <div>
+                                        <div class="fw-card-title">Administrative Authority for Energy Violations</div>
+                                        <div class="fw-card-date">Order №F-95 · Ministry of Energy · 2019</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Administrative procedures and enforcement</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>List of authorized officials for violations</li>
+                                <li>Updates to Order F-108 (Dec 2, 2019)</li>
+                                <li>Enforcement framework established</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>This ministerial order defines which officials within the Ministry of Energy are authorised to handle administrative proceedings for violations of energy legislation.</p>
+                                    <ul>
+                                        <li>Applicable to violations of the Energy Law, RES Law, and EE Law</li>
+                                        <li>Authorised officers can issue fines and compliance orders</li>
+                                        <li>Supersedes earlier fragmented enforcement structure</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="fw-carousel-btn fw-carousel-btn-right" onclick="scrollFwCarousel('car-orders',1)" aria-label="Next">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── OTHER POLICIES ── -->
+            <div class="fw-section" id="other">
+                <div class="fw-section-header">
+                    <span class="fw-section-title">Other Policies &amp; Enactments</span>
+                    <span class="fw-section-count">3</span>
+                </div>
+                <div class="fw-carousel-wrap">
+                    <button class="fw-carousel-btn fw-carousel-btn-left" onclick="scrollFwCarousel('car-other',-1)" aria-label="Previous">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="fw-carousel" id="car-other">
+
+                        <!-- Support Schemes -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">💎</span>
+                                    <div>
+                                        <div class="fw-card-title">Support Schemes &amp; Guarantees</div>
+                                        <div class="fw-card-date">RES Law Framework</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">State support mechanisms</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>Feed-in tariff system for small producers</li>
+                                <li>Guaranteed long-term PPAs</li>
+                                <li>Priority grid access for renewables</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>A suite of financial and administrative support measures ensures that both small residential producers and large independent power producers can operate viably.</p>
+                                    <ul>
+                                        <li>Net-metering: surplus exported to grid at retail price</li>
+                                        <li>Feed-in tariff: fixed for 20 years for &lt;1 MW plants</li>
+                                        <li>Priority dispatch: RES electricity dispatched before fossil fuel</li>
+                                        <li>State investment guarantees covering political risk</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- AZURE Project -->
+                        <div class="fw-card" data-status="progress">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🔌</span>
+                                    <div>
+                                        <div class="fw-card-title">AZURE Subsea Cable Project</div>
+                                        <div class="fw-card-date">Azerbaijan–Georgia–Romania–Hungary</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">Subsea electricity interconnector</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>1,000 km+ subsea cable project</li>
+                                <li>4 GW transmission capacity</li>
+                                <li>Green energy export to Europe</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>A major infrastructure project that will allow Azerbaijan to export renewable electricity across the Black Sea to European markets, transforming the country into a clean energy exporter.</p>
+                                    <ul>
+                                        <li>Supported by EU Green Deal and EBRD financing</li>
+                                        <li>MoU signed between AZ, GE, RO, HU governments</li>
+                                        <li>Expected to carry 4 GW of Azerbaijani green power</li>
+                                        <li>Complements the Southern Gas Corridor infrastructure</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-progress">In Development</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                        <!-- Paris NDCs (Other) -->
+                        <div class="fw-card" data-status="active">
+                            <div class="fw-card-top">
+                                <div class="fw-card-header">
+                                    <span class="fw-card-icon">🌍</span>
+                                    <div>
+                                        <div class="fw-card-title">Paris Agreement &amp; NDC Implementation</div>
+                                        <div class="fw-card-date">Joined 2016 · Updated 2024</div>
+                                    </div>
+                                </div>
+                                <span class="fw-focus-badge">National climate pledges</span>
+                            </div>
+                            <ul class="fw-key-points">
+                                <li>NDC: 35% GHG reduction by 2030</li>
+                                <li>Voluntary: 40% reduction by 2050</li>
+                                <li>"Green zones" framework integration</li>
+                            </ul>
+                            <div class="fw-card-details">
+                                <div class="fw-details-inner">
+                                    <p>Azerbaijan's implementation of the Paris Agreement integrates across all energy, transport, and agriculture legislation, with the RES Law and Energy Law acting as key delivery vehicles.</p>
+                                    <ul>
+                                        <li>Annual GHG inventory submitted to UNFCCC</li>
+                                        <li>Transparency mechanism (Biennial Transparency Report)</li>
+                                        <li>Just Transition framework for coal-dependent communities</li>
+                                        <li>Climate finance mobilisation target: $1.2 bn by 2030</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="fw-card-footer">
+                                <span class="fw-status fw-status-active">Active</span>
+                                <button class="fw-toggle-btn" tabindex="-1">Details <i class="fw-toggle-chevron">▾</i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button class="fw-carousel-btn fw-carousel-btn-right" onclick="scrollFwCarousel('car-other',1)" aria-label="Next">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /container -->
+    </div><!-- /fw-wrap -->
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Azerbaijan Sustainable Energies Hub. Powering a greener future.</p>
+        </div>
+    </footer>
+
+    <script src="i18n.js"></script>
+    <script src="theme.js"></script>
+    <script>
+        // ── Carousel scroll ──
+        function scrollFwCarousel(id, dir) {
+            var el = document.getElementById(id);
+            if (el) el.scrollBy({ left: dir * 310, behavior: 'smooth' });
+        }
+
+        // ── Card expand/collapse via event delegation ──
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('a') || e.target.closest('.fw-carousel-btn') ||
+                e.target.closest('.fw-stat') || e.target.closest('.fw-filter-btn') ||
+                e.target.closest('.fw-filter-selector')) return;
+
+            var card = e.target.closest('.fw-card');
+            if (!card) return;
+            card.classList.toggle('open');
+        });
+
+        // ── Search + filter ──
+        var fwSearch      = document.getElementById('fwSearch');
+        var fwFilters     = document.querySelectorAll('.fw-filter-btn');
+        var fwSections    = document.querySelectorAll('.fw-section');
+        var fwNoRes       = document.getElementById('fw-no-results');
+        var currentFilter = 'all';
+
+        fwFilters.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                fwFilters.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                applyFwFilter();
+            });
+        });
+
+        fwSearch.addEventListener('input', applyFwFilter);
+
+        function applyFwFilter() {
+            var term    = fwSearch.value.toLowerCase();
+            var visible = 0;
+
+            fwSections.forEach(function(sec) {
+                var cards  = sec.querySelectorAll('.fw-card');
+                var secVis = 0;
+
+                cards.forEach(function(card) {
+                    var text   = card.textContent.toLowerCase();
+                    var status = (card.dataset.status || '').toLowerCase();
+
+                    var ok = (!term || text.includes(term)) && (
+                        currentFilter === 'all' ||
+                        (currentFilter === 'active'      && status === 'active') ||
+                        (currentFilter === 'implemented' && status === 'implemented') ||
+                        (currentFilter === 'progress'    && status === 'progress')
+                    );
+
+                    card.style.display = ok ? '' : 'none';
+                    if (ok) { secVis++; visible++; }
+                });
+
+                sec.style.display = secVis > 0 ? '' : 'none';
+            });
+
+            fwNoRes.style.display = visible === 0 ? 'block' : 'none';
+        }
+
+        // ── Filter Selector ──
+        var fsAvailable   = document.getElementById('fwFsAvailable');
+        var fsSelected    = document.getElementById('fwFsSelected');
+        var fsPlaceholder = document.getElementById('fwFsPlaceholder');
+        var fsClear       = document.getElementById('fwFsClear');
+        var selectedSections = new Set();
+
+        function applyFsFilter() {
+            fwSections.forEach(function(sec) {
+                if (selectedSections.size === 0) {
+                    sec.style.display = '';
+                } else {
+                    sec.style.display = selectedSections.has(sec.id) ? '' : 'none';
+                }
+            });
+            // Also re-run text/status filter so both filters compose
+            applyFwFilter();
+        }
+
+        function animateTag(tag) {
+            tag.classList.remove('animating');
+            void tag.offsetWidth; // force reflow to restart animation
+            tag.classList.add('animating');
+            tag.addEventListener('animationend', function() {
+                tag.classList.remove('animating');
+            }, { once: true });
+        }
+
+        document.getElementById('fwFilterSelector').addEventListener('click', function(e) {
+            var tag = e.target.closest('.fw-fs-tag');
+            if (!tag) return;
+            animateTag(tag);
+            var sectionId = tag.dataset.section;
+            if (tag.parentElement === fsAvailable) {
+                fsSelected.appendChild(tag);
+                selectedSections.add(sectionId);
+                fsPlaceholder.style.display = 'none';
+                fsClear.style.display = '';
+            } else {
+                fsAvailable.appendChild(tag);
+                selectedSections.delete(sectionId);
+                if (selectedSections.size === 0) {
+                    fsPlaceholder.style.display = '';
+                    fsClear.style.display = 'none';
+                }
+            }
+            applyFsFilter();
+        });
+
+        fsClear.addEventListener('click', function() {
+            Array.from(fsSelected.querySelectorAll('.fw-fs-tag')).forEach(function(tag) {
+                animateTag(tag);
+                fsAvailable.appendChild(tag);
+            });
+            selectedSections.clear();
+            fsPlaceholder.style.display = '';
+            fsClear.style.display = 'none';
+            applyFsFilter();
+        });
+    </script>
+</body>
+</html>
