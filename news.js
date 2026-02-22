@@ -4,8 +4,8 @@
     var PAGE_SIZE = 6;
     var FALLBACK_IMG = 'solartower.png';
 
-    // DB API config — set window.ENV_NEWS_API and window.ENV_NEWS_SECRET in env-config.js
-    var API_BASE   = (window.ENV_NEWS_API   || 'https://api.plugin.az').replace(/\/$/, '');
+    // DB API — Vercel serverless function proxies to PostgreSQL directly
+    var API_BASE   = '/api';
     var API_SECRET = window.ENV_NEWS_SECRET || '';
     var CACHE_KEY  = 'cescocomp_news_cache';
     var CACHE_TTL  = 10 * 60 * 1000; // 10 minutes — refresh silently after this
