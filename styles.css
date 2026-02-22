@@ -100,6 +100,27 @@ body {
     transition: color 0.3s, opacity 0.3s;
 }
 
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+/* Author attribution styling */
+.footer .author-text {
+    color: var(--text-dark);
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* Ensure author text is white in light mode, black in dark mode */
+body:not(.dark-mode) .footer .author-text {
+    color: white;
+}
+
+body.dark-mode .footer .author-text {
+    color: black;
+}
+
 .logo:hover {
     color: var(--secondary-color);
     opacity: 0.9;
@@ -732,21 +753,15 @@ body:not(.dark-mode) .hero-overlay {
 
 /* ── Logo image ── */
 .logo {
-    overflow: visible; /* let image grow past the pill */
     display: flex;
     align-items: center;
 }
 
 .logo-img {
-    height: 90px;
+    height: 40px;
     width: auto;
     display: block;
     object-fit: contain;
-    position: relative;
-    z-index: 5;
-    /* vertically centred without expanding the nav pill */
-    margin-top: -22px;
-    margin-bottom: -22px;
 }
 
 /* On banner nav give the logo a brightness boost so it reads on dark images */

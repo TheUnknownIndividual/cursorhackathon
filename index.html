@@ -13,7 +13,9 @@
         <div class="hero-overlay" aria-hidden="true"></div>
         <nav class="navbar navbar-in-banner">
             <div class="nav-inner">
-                <a href="index.html" class="logo"><img src="logo.png" alt="AZ Energy Hub" class="logo-img"></a>
+                <a href="index.html" class="logo">
+                    <img src="lightmodeplugin.png" alt="AZ Energy Hub" class="logo-img">
+                </a>
                 <ul class="nav-links">
                     <li><a href="index.html" data-i18n="nav.home">Home</a></li>
                     <li><a href="solar-calculator.html" data-i18n="nav.calculator">Solar Calculator</a></li>
@@ -197,11 +199,329 @@
         </div>
     </section>
 
+    <!-- Energy Landscape Section -->
+    <section class="map-section" id="map" style="background: var(--bg); padding: 4rem 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">Explore Azerbaijan's Energy Landscape</h2>
+                <p style="color: var(--text-dark); opacity: 0.8; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                    Interactive data and comprehensive mapping of Azerbaijan's renewable energy potential, projects, and infrastructure
+                </p>
+            </div>
+
+            <!-- Additional Energy Maps & Data -->
+            <div style="margin-top: 4rem; display: grid; gap: 3rem;">
+                <!-- Solar Radiation Map -->
+                <div style="background: var(--card-bg); border-radius: 16px; padding: 2.5rem; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: var(--shadow);">
+                    <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">
+                        ☀️ Total Solar Radiation Map of Azerbaijan
+                    </h3>
+                    <p style="color: var(--text-dark); opacity: 0.7; margin-bottom: 1.5rem;">
+                        Comprehensive solar irradiation distribution across Azerbaijan's territory
+                    </p>
+                    <img src="energyradiationaz.png" alt="Total solar radiation map of Azerbaijan"
+                        style="width: 70%; margin: 0 auto; display: block; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="font-size: 0.85rem; color: var(--text-dark); opacity: 0.6; margin-top: 1rem; font-style: italic;">
+                        Source: Imamverdiyev, N.S. (2021). <a
+                            href="https://aak.gov.az/upload/dissertasion/co_rafiya/Avtoreferat_(AZ)1.pdf"
+                            target="_blank" style="color: var(--primary-color);">Geographical Investigation of Azerbaijan's
+                            Renewable Energy Resources</a>
+                    </p>
+                </div>
+
+                <!-- Wind Speed Distribution Map -->
+                <div style="background: var(--card-bg); border-radius: 16px; padding: 2.5rem; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: var(--shadow);">
+                    <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">
+                        💨 Wind Speed Distribution in Azerbaijan (50m height)
+                    </h3>
+                    <p style="color: var(--text-dark); opacity: 0.7; margin-bottom: 1.5rem;">
+                        Map of wind speed distribution across Azerbaijan at 50 meters above ground level
+                    </p>
+                    <img src="windazerbaycan.png" alt="Map of wind speed distribution in Azerbaijan (50m)"
+                        style="width: 70%; margin: 0 auto; display: block; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <p style="font-size: 0.85rem; color: var(--text-dark); opacity: 0.6; margin-top: 1rem; font-style: italic;">
+                        Source: Imamverdiyev, N.S. (2021). <a
+                            href="https://aak.gov.az/upload/dissertasion/co_rafiya/Avtoreferat_(AZ)1.pdf"
+                            target="_blank" style="color: var(--primary-color);">Geographical Investigation of Azerbaijan's
+                            Renewable Energy Resources</a>
+                    </p>
+                </div>
+
+                <!-- Karabakh Region Maps -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem;">
+                    <div style="background: var(--card-bg); border-radius: 16px; padding: 2rem; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: var(--shadow);">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">
+                            🌟 Karabakh Region - Solar Potential
+                        </h3>
+                        <p style="color: var(--text-dark); opacity: 0.7; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                            Solar radiation mapping for the liberated Karabakh territories
+                        </p>
+                        <img src="karabakhregionradiation.png" alt="Karabakh region solar radiation map"
+                            style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    </div>
+                    <div style="background: var(--card-bg); border-radius: 16px; padding: 2rem; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: var(--shadow);">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">
+                            💨 Karabakh Region - Wind Potential
+                        </h3>
+                        <p style="color: var(--text-dark); opacity: 0.7; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                            Wind speed analysis for renewable energy development in Karabakh
+                        </p>
+                        <img src="karabakhregionwind.png" alt="Karabakh region wind potential map"
+                            style="width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optimal Solar Panel Location Tables -->
+    <div style="margin-top: 3rem; display: grid; gap: 3rem; max-width: 1400px; margin-left: auto; margin-right: auto; padding: 0 2rem; box-sizing: border-box;">
+        <!-- Highly Optimal Solar Locations Table -->
+        <div style="background: var(--card-bg); border-radius: 16px; padding: 2.5rem; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: var(--shadow);">
+            <h3 style="font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">
+                🎯 Highly Optimal Areas for Solar Panels
+            </h3>
+            <p style="color: var(--text-dark); opacity: 0.7; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Top-tier locations with exceptional solar radiation levels (1700+ kWh/year)
+            </p>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: rgba(90, 154, 110, 0.15); border-bottom: 2px solid var(--primary-color);">
+                            <th style="padding: 1rem; text-align: left; color: var(--text-dark);">#</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-dark);">Location</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-dark);">Coordinates (lat - lon)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">Area (km²)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">Total Rad. (kWh/y)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">PV Capacity (MW/y)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">Annual Output (million kWh/y)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">1</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Gulistan (Julfa)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">38.97 – 45.73</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">2.1</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1755</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">101</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">151.6</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">2</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Diza (Julfa)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">38.97 – 45.65</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">9.2</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1753</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">440</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">661.1</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">3</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Yayci (Julfa)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.18 – 45.54</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">4.0</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1749</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">193</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">290</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">4</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Boyukduz (Babek)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.29 – 45.32</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">45.5</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1737</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">2170</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">3256</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">5</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Julfa c. (SmSh part)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.02 – 45.57</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">1.3</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1735</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">61</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">92.4</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">6</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Tananam (Sharur)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.48 – 45.13</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">10.6</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1730</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">507</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">761.3</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">7</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Yeni Kerki (Babek)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.25 – 45.22</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">22.8</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1728</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">1089</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">1634</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">8</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Karaagac (Sadarak)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.69 – 44.93</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">13.7</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1719</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">653</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">980.4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-dark); opacity: 0.6; margin-top: 1rem; font-style: italic;">
+                Source: Imamverdiyev, N.S. (2021). <a
+                    href="https://aak.gov.az/upload/dissertasion/co_rafiya/Avtoreferat_(AZ)1.pdf" target="_blank"
+                    style="color: var(--primary-color);">Geographical Investigation of Azerbaijan's
+                    Renewable Energy Resources</a>
+            </p>
+        </div>
+
+        <!-- Average Optimal Solar Locations Table -->
+        <div style="background: var(--card-bg); border-radius: 16px; padding: 2.5rem; border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: var(--shadow);">
+            <h3 style="font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--text-dark); font-family: 'Space Grotesk', sans-serif;">
+                ⭐ Average Optimal Areas for Solar Panels
+            </h3>
+            <p style="color: var(--text-dark); opacity: 0.7; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Well-suited locations with strong solar radiation levels (1500-1600 kWh/year)
+            </p>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: rgba(90, 154, 110, 0.15); border-bottom: 2px solid var(--primary-color);">
+                            <th style="padding: 1rem; text-align: left; color: var(--text-dark);">#</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-dark);">Location</th>
+                            <th style="padding: 1rem; text-align: left; color: var(--text-dark);">Coordinates (lat - lon)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">Area (km²)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">Total Rad. (kWh/y)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">PV Capacity (MW/y)</th>
+                            <th style="padding: 1rem; text-align: right; color: var(--text-dark);">Annual Output (million kWh/y)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">1</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">III Agalı (Zangilan)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.21 – 46.87</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">28.3</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1574</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">1348</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">1618.7</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">2</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Zira (Baku)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">40.34 – 50.33</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">1.3</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1523</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">65</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">78.0</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">3</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Horadiz (SW part)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">39.37 – 47.20</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">1.9</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1530</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">92</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">110.5</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">4</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Sangachal (W part)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">40.22 – 49.42</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">26.8</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1529</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">1278</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">1533.6</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">5</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Cheyildagh (Absheron)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">40.30 – 49.37</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">44.6</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1527</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">2128</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">2553.9</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+                            <td style="padding: 1rem; color: var(--text-dark);">6</td>
+                            <td style="padding: 1rem; color: var(--text-dark);">Gobu (Absheron)</td>
+                            <td style="padding: 1rem; color: var(--text-dark); opacity: 0.7;">40.35 – 49.72</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">4.9</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--primary-color); font-weight: 600;">1525</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--text-dark); opacity: 0.7;">234</td>
+                            <td style="padding: 1rem; text-align: right; color: var(--secondary-color); font-weight: 600;">280.8</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-dark); opacity: 0.6; margin-top: 1rem; font-style: italic;">
+                Source: Imamverdiyev, N.S. (2021). <a
+                    href="https://aak.gov.az/upload/dissertasion/co_rafiya/Avtoreferat_(AZ)1.pdf" target="_blank"
+                    style="color: var(--primary-color);">Geographical Investigation of Azerbaijan's
+                    Renewable Energy Resources and Creation of Information Base</a>. Republic of Azerbaijan
+                Dissertation.
+            </p>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
-            <p data-i18n="index.footer">&copy; 2026 Azerbaijan Sustainable Energies Hub. Powering a greener future.</p>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                <p data-i18n="index.footer">&copy; 2026 Azerbaijan Sustainable Energies Hub. Powering a greener future.</p>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span class="author-text">by Huseyn Alakbar</span>
+                    <a href="https://www.linkedin.com/in/huseynalakbar/" target="_blank" rel="noopener noreferrer"
+                        style="display: inline-flex; align-items: center; transition: transform 0.2s ease;"
+                        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        <img src="linkedinlight.png" alt="LinkedIn" style="height: 24px; width: 24px;">
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
+    <script src="i18n.js"></script>
+    <script src="theme.js"></script>
+    <script src="stats-counter.js"></script>
+    <script src="typewriter.js"></script>
+    <script>
+        /* Animate RES distribution bars on scroll */
+        (function () {
+            function run() {
+                var rows = document.querySelectorAll('#resDistroBars .res-bar-row');
+                if (!rows.length) return;
+                if (!('IntersectionObserver' in window)) {
+                    rows.forEach(function (row) {
+                        var fill = row.querySelector('.res-bar-fill');
+                        if (fill) fill.style.width = row.dataset.pct + '%';
+                    });
+                    return;
+                }
+                var obs = new IntersectionObserver(function (entries, o) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        var fill = entry.target.querySelector('.res-bar-fill');
+                        var pct  = entry.target.dataset.pct;
+                        if (fill && pct) fill.style.width = pct + '%';
+                        o.unobserve(entry.target);
+                    });
+                }, { threshold: 0.25 });
+                rows.forEach(function (row) { obs.observe(row); });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', run);
+            } else {
+                run();
+            }
+        })();
+    </script>
+</body>
+</html>
     <script src="i18n.js"></script>
     <script src="theme.js"></script>
     <script src="stats-counter.js"></script>
